@@ -66,18 +66,20 @@ However, this is not enough. We can use Powersync sync rules to enforce permissi
 
 First, we need to understand the permissions from the app domain model:
 
-- A workspace is created by a user — this user can always see and edit the workspace.
-- A workspace has a specific *visibility*: private (only the owner can see it), workspace (only owner and members can see it), or public (anyone can see it).
-- A workspace has a list of *members* (users) that can see and edit the workspace, if the workspace is not private.
-- A board is created by a user — this user can always see and edit the board.
-- A board has a specific *visibility*: private (only the owner can see it), workspace (only owner and members belonging to the parent workspace can see it), or public (anyone can see it).
-- A board has a list of *members* (users) that can see and edit the board, if the board is not private.
+- A **workspace** is created by a user — this user can always see and edit the workspace.
+- A **workspace** has a specific *visibility*: private (only the owner can see it), workspace (only owner and members can see it), or public (anyone can see it).
+- A **workspace** has a list of *members* (users) that can see and edit the workspace, if the workspace is not private.
+- A **board** is created by a user — this user can always see and edit the board.
+- A **board** has a specific *visibility*: private (only the owner can see it), workspace (only owner and members belonging to the parent workspace can see it), or public (anyone can see it).
+- A **board** has a list of *members* (users) that can see and edit the board, if the board is not private.
 
 Let us explore how we can use sync rules to enforce these permissions.
 
-Step1: basic userId based rules (`sync-rules-1.yaml`)
-Step2: add visibility rules (`sync-rules-2.yaml`)
-Step3: add public workspace rules (`sync-rules-3.yaml`)
+TODO steps:
+
+. basic userId based rules (`sync-rules-1.yaml`)
+. add visibility rules (`sync-rules-2.yaml`)
+. add public workspace rules (`sync-rules-3.yaml`)
 
 
 ## Build process
