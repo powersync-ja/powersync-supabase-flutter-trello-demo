@@ -6,9 +6,8 @@ Trello App Clone built with [Flutter](https://flutter.dev/) :star2: [Powersync](
 
 ![Banner of the images](showcase.png)
 
-## Features
-
- - TODO
+- `trelloappclone_powersync_client` is a library that defines the domain model and integrates with Powersync and Supabase
+- `trelloappclone_flutter` contains the Trello clone Flutter app
 
 ## Getting Started
 

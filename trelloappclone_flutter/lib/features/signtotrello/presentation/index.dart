@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:trelloappclone_flutter/features/signtotrello/domain/sign_arguments.dart';
 import 'package:trelloappclone_flutter/utils/color.dart';
-import 'package:trelloappclone_powersync_client/trelloappclinet_powersync_client.dart';
+import 'package:trelloappclone_powersync_client/trelloappclone_powersync_client.dart';
 
 import '../../../utils/config.dart';
 import '../../../utils/service.dart';

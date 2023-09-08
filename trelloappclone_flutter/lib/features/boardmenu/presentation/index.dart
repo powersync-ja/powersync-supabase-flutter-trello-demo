@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trelloappclone_flutter/features/visibility/presentation/index.dart';
 import 'package:trelloappclone_flutter/main.dart';
 import 'package:trelloappclone_flutter/utils/color.dart';
-import 'package:trelloappclone_powersync_client/trelloappclinet_powersync_client.dart';
+import 'package:trelloappclone_powersync_client/trelloappclone_powersync_client.dart';
 
 import '../../activity/presentation/index.dart';
 

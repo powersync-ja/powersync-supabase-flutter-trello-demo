@@ -7,7 +7,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:status_alert/status_alert.dart';
 import 'package:trelloappclone_flutter/features/home/presentation/custom_search.dart';
 import 'package:trelloappclone_flutter/utils/color.dart';
-import 'package:trelloappclone_powersync_client/trelloappclinet_powersync_client.dart';
+import 'package:trelloappclone_powersync_client/trelloappclone_powersync_client.dart';
 import 'package:uuid/uuid.dart';
 
 import '../main.dart';

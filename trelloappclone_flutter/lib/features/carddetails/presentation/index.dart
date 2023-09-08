@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trelloappclone_flutter/features/activity/presentation/index.dart';
 import 'package:trelloappclone_flutter/utils/color.dart';
-import 'package:trelloappclone_powersync_client/trelloappclinet_powersync_client.dart';
+import 'package:trelloappclone_powersync_client/trelloappclone_powersync_client.dart';
 
 import '../../../utils/service.dart';
 import '../../editlabels/presentation/index.dart';

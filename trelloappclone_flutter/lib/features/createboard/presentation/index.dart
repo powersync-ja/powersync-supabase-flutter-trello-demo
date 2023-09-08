@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trelloappclone_flutter/main.dart';
-import 'package:trelloappclone_powersync_client/trelloappclinet_powersync_client.dart';
+import 'package:trelloappclone_powersync_client/trelloappclone_powersync_client.dart';
 
 import '../../../utils/color.dart';
 import '../../../utils/constant.dart';

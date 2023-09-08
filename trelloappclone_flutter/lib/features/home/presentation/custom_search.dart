@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trelloappclone_powersync_client/trelloappclinet_powersync_client.dart';
+import 'package:trelloappclone_powersync_client/trelloappclone_powersync_client.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
   List<Board> searchTerms = [];

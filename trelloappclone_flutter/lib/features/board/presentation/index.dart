@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:trelloappclone_flutter/features/carddetails/domain/card_detail_arguments.dart';
 import 'package:trelloappclone_flutter/features/carddetails/presentation/index.dart';
 import 'package:trelloappclone_flutter/utils/color.dart';
-import 'package:trelloappclone_powersync_client/trelloappclinet_powersync_client.dart';
+import 'package:trelloappclone_powersync_client/trelloappclone_powersync_client.dart';
 
 import '../../../main.dart';
 import '../../../utils/config.dart';
