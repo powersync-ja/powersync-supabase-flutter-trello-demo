@@ -1,15 +1,9 @@
 # trelloappclone_flutter
 
-A new Flutter project with Serverpod.
+Trello App Clone built with [Flutter](https://flutter.dev/) :star2: [Powersync](https://powersync.co/) and [Supabase](https://supabase.io/)
 
-## Getting Started
+See [the overview README](../README.md) for more information about this project.
 
-This project is a starting point for a Flutter application that is using
-Serverpod.
+## Acknowledgements
 
-A great starting point for learning Serverpod is our documentation site at:
-[https://docs.serverpod.dev](https://docs.serverpod.dev).
-
-To run the project, first make sure that the server is running, then do:
-
-    flutter run
+This app tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/Mobterest/serverpod_flutter_tutorial) by [Mobterest](https://www.instagram.com/mobterest/, with minimum changes to make it work with the Powersync client library from `trelloappclone_powersync_client`.

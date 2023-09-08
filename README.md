@@ -84,4 +84,18 @@ TODO: explain how it sticks together
 
 This tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/Mobterest/serverpod_flutter_tutorial) by [Mobterest](https://www.instagram.com/mobterest/
 
+# TODOs
 
+- [X] Basic Powersync and Supabase setup
+- [X] Create Supabase tables
+- [X] Port Serverpod client code to Powersync client code
+- [X] Update App code to user powersync client code
+- [X] Test if it works with local db (sqlite)
+- [ ] Update to use Supabase Auth
+- [ ] Test if syncing works
+- [ ] Tweak sync rules to enforce permissions (according to workspace + board visibility and members)
+- [ ] Look at using transactions
+- [ ] Look at using watch queries
+- [ ] Data generation (or import) functionality for testing bigger datasets
+- [ ] (nice2have) improve logging
+- [ ] (nice2have) get attachment uploads working with supabase
