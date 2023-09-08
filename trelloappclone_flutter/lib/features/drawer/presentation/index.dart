@@ -29,7 +29,7 @@ class _CustomDrawerState extends State<CustomDrawer> with Service {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 5.0),
-              child: Text(trello.user.name!),
+              child: Text(trello.user.name ?? trello.user.email),
             ),
             Text("@${trello.user.name!.toLowerCase().replaceAll(" ", "")}"),
             Row(
@@ -114,6 +114,14 @@ class _CustomDrawerState extends State<CustomDrawer> with Service {
                     leading: const Icon(Icons.help_outline_rounded),
                     title: const Text("Help!"),
                     onTap: () {},
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.logout),
+                    title: const Text("Log Out"),
+                    onTap: () {
+                      logOut(context);
+                      Navigator.pushNamed(context, '/');
+                    },
                   ),
                 ],
               )

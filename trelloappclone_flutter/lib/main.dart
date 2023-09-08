@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:trelloappclone_flutter/utils/trello_provider.dart';
 import 'package:trelloappclone_powersync_client/trelloappclinet_powersync_client.dart';
+import 'package:logging/logging.dart';
 
 import 'features/aboutboard/presentation/index.dart';
 import 'features/archivedcards/presentation/index.dart';
@@ -40,28 +42,25 @@ var client = Client();
 TrelloProvider trello = TrelloProvider();
 
 void main() async {
-  //TODO: setup logging
-  // // Log info from PowerSync
-  // Logger.root.level = Level.INFO;
-  // Logger.root.onRecord.listen((record) {
-  //   if (kDebugMode) {
-  //     print(
-  //         '[${record.loggerName}] ${record.level.name}: ${record.time}: ${record.message}');
-  //
-  //     if (record.error != null) {
-  //       print(record.error);
-  //     }
-  //     if (record.stackTrace != null) {
-  //       print(record.stackTrace);
-  //     }
-  //   }
-  // });
+  // Log info from PowerSync
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((record) {
+    // if (kDebugMode) {
+      print(
+          '[${record.loggerName}] ${record.level.name}: ${record.time}: ${record.message}');
+
+      if (record.error != null) {
+        print(record.error);
+      }
+      if (record.stackTrace != null) {
+        print(record.stackTrace);
+      }
+    // }
+  });
 
   WidgetsFlutterBinding
       .ensureInitialized(); //required to get sqlite filepath from path_provider before UI has initialized
   await client.initialize();
-  // final loggedIn = client.isLoggedIn();
-  // runApp(MyApp(loggedIn: loggedIn));
 
   runApp(ChangeNotifierProvider(
       create: (context) => TrelloProvider(), child: const MyApp()));

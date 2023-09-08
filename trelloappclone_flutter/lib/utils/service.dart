@@ -20,10 +20,10 @@ mixin Service {
   }
 
   //sign up new user
-  signUp(TrelloUser user, BuildContext context) async {
+  signUp({required String name, required String email, required String password, required BuildContext context}) async {
     try {
+      TrelloUser user = await client.signupWithEmail(name, email, password);
       await client.user.createUser(user);
-      await client.signupWithEmail(user.email, user.password);
 
       if (context.mounted) {
         Navigator.pushNamed(context, '/');
@@ -54,10 +54,8 @@ mixin Service {
   //log in existing user
   logIn(String email, String password, BuildContext context) async {
     try {
-      //TODO This is a bit clunky, but was a quick way to work it into existing app (which had no proper auth)
-      await client.loginWithEmail(email, password);
-      TrelloUser? authenticatedUser = await client.user.checkUserExists(email);
-      trello.setUser(authenticatedUser!);
+      TrelloUser user = await client.loginWithEmail(email, password);
+      trello.setUser(user);
 
       if (context.mounted) {
         Navigator.pushNamed(context, '/home');
@@ -72,6 +70,23 @@ mixin Service {
             softWrap: true, maxLines: 3, overflow: TextOverflow.ellipsis),
           configuration:
               const IconConfiguration(icon: Icons.check, color: brandColor),
+          maxWidth: 260);
+    }
+  }
+
+  //log out user
+  logOut(BuildContext context) async {
+    try {
+      await client.logOut();
+    } on Exception catch (e) {
+      StatusAlert.show(context,
+          duration: const Duration(seconds: 5),
+          title: 'Logout Error',
+          subtitle: e.toString(),
+          subtitleOptions: StatusAlertTextConfiguration(
+              softWrap: true, maxLines: 3, overflow: TextOverflow.ellipsis),
+          configuration:
+          const IconConfiguration(icon: Icons.check, color: brandColor),
           maxWidth: 260);
     }
   }
@@ -112,7 +127,7 @@ mixin Service {
           id: randomUuid(),
           workspaceId: addedWorkspace.id,
           userId: trello.user.id,
-          name: trello.user.name!,
+          name: trello.user.name ?? trello.user.email,
           role: "Admin");
 
       await client.member.addMember(newMember);

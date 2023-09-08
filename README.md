@@ -48,6 +48,12 @@ TODO: create below instructions from basic tut
 - [ ] figure out how sync rules should look - enforce so that users see only their own data, as well as visible to workspace where they are members, or public workspaces
 - [ ] Create sync rules in Powersync (see basic Powersync Tut)
 
+TODO: explain permissions/visibility of workspaces, boards, etc in app
+
+Step1: basic userId based rules (`sync-rules-1.yaml`)
+Step2: add visibility rules (`sync-rules-2.yaml`)
+Step3: add public workspace rules (`sync-rules-3.yaml`)
+
 ### Configuring Flutter App
 - [ ] Configure Flutter app with powersync project settings (see basic Powersync Tut)
 

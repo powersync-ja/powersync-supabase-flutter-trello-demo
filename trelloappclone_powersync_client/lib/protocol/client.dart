@@ -8,7 +8,6 @@ import 'powersync.dart';
 export "../models/models.dart";
 
 class _Repository {
-  //TODO: perhaps have db instance here, something else that needs setup per "endpoint"?
   Client client;
 
   _Repository(this.client);
@@ -138,7 +137,6 @@ class _BoardRepository extends _Repository {
       boolAsInt(board.close),
       board.id
     ]);
-    //TODO: test for success
     return true;
   }
 
@@ -146,20 +144,19 @@ class _BoardRepository extends _Repository {
     await client
         .getDBExecutor()
         .execute('DELETE FROM board WHERE id = ?', [board.id]);
-    //TODO: test for success
     return true;
   }
 
   Future<Workspace?> getWorkspaceForBoard(Board board) async {
     final results = await client.getDBExecutor().execute('''
-          SELECT * FROM workspace WHERE id = ? ORDER BY dateCreated DESC
+          SELECT * FROM workspace WHERE id = ?
            ''', [board.workspaceId]);
     return results.map((row) => Workspace.fromRow(row)).firstOrNull;
   }
 
   Future<List<Board>> getAllBoards() async {
     final results = await client.getDBExecutor().execute('''
-          SELECT * FROM board WHERE id > 0
+          SELECT * FROM board
            ''');
     return results.map((row) => Board.fromRow(row)).toList();
   }
@@ -216,7 +213,6 @@ class _CardlistRepository extends _Repository {
       boolAsInt(cardlist.comments),
       cardlist.id
     ]);
-    //TODO: test for success
     return true;
   }
 
@@ -265,7 +261,6 @@ class _CheckListRepository extends _Repository {
       boolAsInt(checklist.status),
       checklist.id
     ]);
-    //TODO: test for success
     return true;
   }
 
@@ -273,7 +268,6 @@ class _CheckListRepository extends _Repository {
     await client
         .getDBExecutor()
         .execute('DELETE FROM checklist WHERE id = ?', [checklist.id]);
-    //TODO: test for success
     return true;
   }
 
@@ -324,7 +318,6 @@ class _CommentRepository extends _Repository {
   Future<bool> updateComment(Comment comment) async {
     await client.getDBExecutor().execute(updateQuery,
         [comment.cardId, comment.userId, comment.description, comment.id]);
-    //TODO: test for success
     return true;
   }
 }
@@ -345,7 +338,6 @@ class _ListboardRepository extends _Repository {
       List<Cardlist> cards = await client.card.getCardsforList(list.id);
       list.cards = cards;
     }
-    ;
 
     return lists;
   }
@@ -507,8 +499,7 @@ class _WorkspaceRepository extends _Repository {
     Workspace workspace = Workspace.fromRow(results.first);
     List<Member> members =
         await client.member.getMembersByWorkspace(workspaceId: workspaceId);
-    workspace.members!.clear();
-    workspace.members!.addAll(members);
+    workspace.members = members;
     return workspace;
   }
 
@@ -583,12 +574,26 @@ class Client {
   String? getUserId() {
     return _powerSyncClient.getUserId();
   }
-
-  loginWithEmail(String email, String password) async {
-    await _powerSyncClient.loginWithEmail(email, password);
+  
+  Future<void> logOut() async {
+    await _powerSyncClient.logout();
   }
 
-  signupWithEmail(String email, String password) async {
-    await _powerSyncClient.signupWithEmail(email, password);
+  Future<TrelloUser> loginWithEmail(String email, String password) async {
+    String userId = await _powerSyncClient.loginWithEmail(email, password);
+
+    TrelloUser? storedUser = await user.getUserById(userId: userId);
+    if (storedUser == null) {
+      storedUser = await user.createUser(TrelloUser(id: userId, name: email.split('@')[0],email: email, password: password));
+    }
+    return storedUser;
+  }
+
+  Future<TrelloUser> signupWithEmail(String name, String email, String password) async {
+    TrelloUser? storedUser = await user.checkUserExists(email);
+    if (storedUser != null){
+      throw new Exception('User for email already exists. Use Login instead.');
+    }
+    return _powerSyncClient.signupWithEmail(name, email, password);
   }
 }

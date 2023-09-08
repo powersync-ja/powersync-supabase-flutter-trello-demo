@@ -57,6 +57,7 @@ class _SignToTrelloState extends State<SignToTrello> with Service {
                     const EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
                 child: TextField(
                   controller: emailcontroller,
+                  textCapitalization: TextCapitalization.none,
                   keyboardType: TextInputType.emailAddress,
                   decoration:
                       const InputDecoration(hintText: "Enter your email"),
@@ -109,14 +110,11 @@ class _SignToTrelloState extends State<SignToTrello> with Service {
                     onPressed: () {
                       if (args.type == Sign.signUp && validateSignUp()) {
                         signUp(
-                            TrelloUser(
-                              id: randomUuid(),
-                              name: usernamecontroller.text,
-                              email: emailcontroller.text,
-                              password:
-                                  encryptPassword(passwordcontroller.text),
-                            ),
-                            context);
+                            name: usernamecontroller.text,
+                            email: emailcontroller.text,
+                            password:
+                                encryptPassword(passwordcontroller.text),
+                            context: context);
                       } else if (args.type == Sign.logIn && validateLogin()) {
                         logIn(emailcontroller.text,
                                     encryptPassword(passwordcontroller.text),

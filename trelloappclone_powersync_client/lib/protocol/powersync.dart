@@ -4,6 +4,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:powersync/powersync.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:trelloappclone_powersync_client/models/user.dart';
 
 import '../app_config.dart';
 import '../models/schema.dart';
@@ -187,22 +188,18 @@ class PowerSyncClient {
     });
   }
 
-  Future<void> signupWithEmail(String email, String password) async {
+  Future<TrelloUser>  signupWithEmail(String name, String email, String password) async {
     AuthResponse authResponse = await Supabase.instance.client.auth.signUp(
         email: email, password: password);
 
-    // if (authResponse.session == null) {
-    //   throw Exception('Signup error: expected session to be valid.');
-    // }
+    return TrelloUser(id: authResponse.user!.id, name: name, email: email, password: password);
   }
 
-  Future<void> loginWithEmail(String email, String password) async {
+  Future<String>  loginWithEmail(String email, String password) async {
       AuthResponse authResponse = await Supabase.instance.client.auth.signInWithPassword(
           email: email, password: password);
 
-      // if (authResponse.session == null) {
-      //   throw Exception('Login error: expected session to be valid.');
-      // }
+      return authResponse.user!.id;
   }
 
   /// Explicit sign out - clear database and log out.

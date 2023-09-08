@@ -1,0 +1,18 @@
+bucket_definitions:
+  by_user:
+    # Select parameters for the bucket, using the current user_id
+    parameters: SELECT token_parameters.user_id as user_id
+    data:
+      # Select data rows using the parameters above
+      - SELECT * FROM trellouser WHERE id = bucket.user_id
+      - SELECT * FROM workspace WHERE userId = bucket.user_id
+      - SELECT * FROM board WHERE userId = bucket.user_id
+      - SELECT * FROM activity WHERE userId = bucket.user_id
+      - SELECT * FROM attachment WHERE userId = bucket.user_id
+      - SELECT * FROM card WHERE userId = bucket.user_id
+      - SELECT * FROM checklist WHERE userId = bucket.user_id
+      - SELECT * FROM comment WHERE userId = bucket.user_id
+      - SELECT * FROM listboard WHERE userId = bucket.user_id
+      - SELECT * FROM member WHERE userId = bucket.user_id
+      # TODO also select entities where user is member (not owner) or which is public
+      # TODO select child entities of workspace/board/lists etc loaded from above queries
