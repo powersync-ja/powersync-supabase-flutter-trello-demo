@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:crypto/crypto.dart';
 import 'package:file_picker/file_picker.dart';
@@ -22,22 +23,28 @@ mixin Service {
   signUp(TrelloUser user, BuildContext context) async {
     try {
       await client.user.createUser(user);
+      await client.signupWithEmail(user.email, user.password);
 
       if (context.mounted) {
         Navigator.pushNamed(context, '/');
         StatusAlert.show(context,
             duration: const Duration(seconds: 5),
-            title: 'Trello Clone',
+            title: 'Account Created',
             subtitle: 'Log in with your new credentials',
+            subtitleOptions: StatusAlertTextConfiguration(
+                softWrap: true, maxLines: 3, overflow: TextOverflow.ellipsis),
             configuration:
                 const IconConfiguration(icon: Icons.check, color: brandColor),
             maxWidth: 260);
       }
     } on Exception catch (e) {
+      log('Error with signup: $e', error: e);
       StatusAlert.show(context,
           duration: const Duration(seconds: 5),
-          title: 'Trello Clone',
+          title: 'Sign Up Error',
           subtitle: e.toString(),
+          subtitleOptions: StatusAlertTextConfiguration(
+              softWrap: true, maxLines: 3, overflow: TextOverflow.ellipsis),
           configuration:
               const IconConfiguration(icon: Icons.check, color: brandColor),
           maxWidth: 260);
@@ -45,31 +52,24 @@ mixin Service {
   }
 
   //log in existing user
-  logIn(TrelloUser user, BuildContext context) async {
+  logIn(String email, String password, BuildContext context) async {
     try {
-      TrelloUser? authenticatedUser = await client.user.checkUserExists(user);
+      //TODO This is a bit clunky, but was a quick way to work it into existing app (which had no proper auth)
+      await client.loginWithEmail(email, password);
+      TrelloUser? authenticatedUser = await client.user.checkUserExists(email);
       trello.setUser(authenticatedUser!);
 
-      //if (authenticatedUser != null) {
       if (context.mounted) {
         Navigator.pushNamed(context, '/home');
       }
-      // } else {
-      //   if (context.mounted) {
-      //     StatusAlert.show(context,
-      //         duration: const Duration(seconds: 5),
-      //         title: 'Trello Clone',
-      //         subtitle: "Can't log in? Create an account",
-      //         configuration:
-      //             const IconConfiguration(icon: Icons.check, color: brandColor),
-      //         maxWidth: 260);
-      //   }
-      // }
     } on Exception catch (e) {
+      log('Error with login: $e', error: e);
       StatusAlert.show(context,
           duration: const Duration(seconds: 5),
-          title: 'Trello Clone',
+          title: 'Login Error',
           subtitle: e.toString(),
+          subtitleOptions: StatusAlertTextConfiguration(
+            softWrap: true, maxLines: 3, overflow: TextOverflow.ellipsis),
           configuration:
               const IconConfiguration(icon: Icons.check, color: brandColor),
           maxWidth: 260);

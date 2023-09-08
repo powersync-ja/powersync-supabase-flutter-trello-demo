@@ -26,6 +26,7 @@ After creating the Supabase project, we still need to create the tables in the d
 TODO: use `tables.sql` and explain how to run this in Supabase SQL editor
  
 - [ ] Create tables in Supabase (using generated sql files)
+- [ ] set email confirmation flow to false
 
 ### Create the Postgres Publication
 
@@ -91,11 +92,18 @@ This tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/
 - [X] Port Serverpod client code to Powersync client code
 - [X] Update App code to user powersync client code
 - [X] Test if it works with local db (sqlite)
-- [ ] Update to use Supabase Auth
-- [ ] Test if syncing works
+- [X] Update to use Supabase Auth
 - [ ] Tweak sync rules to enforce permissions (according to workspace + board visibility and members)
+- [ ] Test if syncing works
 - [ ] Look at using transactions
 - [ ] Look at using watch queries
 - [ ] Data generation (or import) functionality for testing bigger datasets
 - [ ] (nice2have) improve logging
 - [ ] (nice2have) get attachment uploads working with supabase
+- [ ] (nice2have) implement email confirmation flow
+
+## Possible next steps
+
+* Email confirmation flow
+* Update of password or email
+* Enhancing UX of app

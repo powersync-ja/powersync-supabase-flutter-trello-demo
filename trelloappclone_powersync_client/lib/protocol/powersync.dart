@@ -187,6 +187,24 @@ class PowerSyncClient {
     });
   }
 
+  Future<void> signupWithEmail(String email, String password) async {
+    AuthResponse authResponse = await Supabase.instance.client.auth.signUp(
+        email: email, password: password);
+
+    // if (authResponse.session == null) {
+    //   throw Exception('Signup error: expected session to be valid.');
+    // }
+  }
+
+  Future<void> loginWithEmail(String email, String password) async {
+      AuthResponse authResponse = await Supabase.instance.client.auth.signInWithPassword(
+          email: email, password: password);
+
+      // if (authResponse.session == null) {
+      //   throw Exception('Login error: expected session to be valid.');
+      // }
+  }
+
   /// Explicit sign out - clear database and log out.
   Future<void> logout() async {
     if (!_isInitialized) {

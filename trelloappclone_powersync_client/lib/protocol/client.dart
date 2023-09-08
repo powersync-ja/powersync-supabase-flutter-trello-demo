@@ -453,10 +453,10 @@ class _UserRepository extends _Repository {
     return results.map((row) => TrelloUser.fromRow(row)).firstOrNull;
   }
 
-  Future<TrelloUser?> checkUserExists(TrelloUser existinguser) async {
+  Future<TrelloUser?> checkUserExists(String email) async {
     final results = await client.getDBExecutor().execute('''
           SELECT * FROM trellouser WHERE email = ? 
-           ''', [existinguser.email]);
+           ''', [email]);
     return results.map((row) => TrelloUser.fromRow(row)).firstOrNull;
   }
 }
@@ -582,5 +582,13 @@ class Client {
 
   String? getUserId() {
     return _powerSyncClient.getUserId();
+  }
+
+  loginWithEmail(String email, String password) async {
+    await _powerSyncClient.loginWithEmail(email, password);
+  }
+
+  signupWithEmail(String email, String password) async {
+    await _powerSyncClient.signupWithEmail(email, password);
   }
 }
