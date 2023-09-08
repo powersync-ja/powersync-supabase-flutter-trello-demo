@@ -1,18 +1,8 @@
 bucket_definitions:
   by_user:
     # Select parameters for the bucket, using the current user_id
-    #parameters: SELECT token_parameters.user_id as user_id
+    # TODO: get this working to only sync entities where user is the owner
     parameters: SELECT id as user_id FROM trellouser WHERE trellouser.id = token_parameters.user_id
     data:
-      - SELECT * FROM trellouser WHERE trellouser.id = bucket.user_id
-      - SELECT * FROM workspace WHERE workspace.userId = bucket.user_id
-      - SELECT * FROM board WHERE board.userId = bucket.user_id
-      - SELECT * FROM activity WHERE activity.userId = activity.bucket.user_id
-      - SELECT * FROM attachment WHERE attachment.userId = bucket.user_id
-      - SELECT * FROM card WHERE card.userId = bucket.user_id
-      - SELECT * FROM checklist WHERE checklist.userId = bucket.user_id
-      - SELECT * FROM comment WHERE comment.userId = bucket.user_id
-      - SELECT * FROM listboard WHERE listboard.userId = bucket.user_id
-      - SELECT * FROM member WHERE member.userId = bucket.user_id
       # TODO also select entities where user is member (not owner) or which is public
       # TODO select child entities of workspace/board/lists etc loaded from above queries

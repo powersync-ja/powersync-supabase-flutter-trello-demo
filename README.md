@@ -18,6 +18,7 @@ TODO: describe below steps from basic tut.
 - [ ] Create Powersync & Supabase accounts
 
 ## Configuring Supabase
+TODO: describe below steps from basic tut.
 - [ ] Setup Supabase project
 
 ### Creating Database Tables
@@ -44,6 +45,7 @@ TODO: create below instructions from basic tut
 - [ ] and connect to Supabase
 
 ### Configuring Flutter App
+TODO: describe below steps from basic tut.
 - [ ] Configure Flutter app with powersync project settings (see basic Powersync Tut)
 
 Note that at this stage _we have NOT yet setup any sync rules_. This means that the app will not yet show any data, and will not yet retain any data that you create locally. What actually happens is that the data gets synced to Supabase (you can check with the Supabase SQL editor), but since there are no valid sync rules, Powersync deletes it from the local store.
@@ -98,10 +100,10 @@ TODO: explain how it sticks together
 
 1. overview of layers (app, client lib)
 2. end-to-end discussion of how an entity is created, updated, deleted
+6. discussion on sync rules applied
 3. discussion of watch query example
 4. discussion of transaction example
 5. discussion on IDs?
-6. discussion on sync rules applied
 
 ## Feedback
 
@@ -120,18 +122,20 @@ This tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/
 - [X] Update App code to user powersync client code
 - [X] Test if it works with local db (sqlite)
 - [X] Update to use Supabase Auth
-- [ ] implement basic global sync rules
-- [ ] Test if global syncing works
+- [X] implement basic global sync rules
+- [X] Test if global syncing works
 - [ ] Tweak sync rules to enforce permissions (according to workspace + board visibility and members)
-- [ ] Look at using transactions
+- [ ] Test if permissions are enforced by Powersync
 - [ ] Look at using watch queries
+- [ ] Look at using transactions
 - [ ] Data generation (or import) functionality for testing bigger datasets
-- [ ] (nice2have) improve logging
+- [ ] README/Tutorial writing & cleanup
 - [ ] (nice2have) get attachment uploads working with supabase
 - [ ] (nice2have) implement email confirmation flow
+- [ ] (nice2have) improve logging
 
 ## Possible next steps
 
 * Email confirmation flow
 * Update of password or email
-* Enhancing UX of app
+* Enhancing UX of app (there are many irritating issues and things not working yet in the original app)
