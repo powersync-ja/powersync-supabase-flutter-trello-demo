@@ -1,0 +1,15 @@
+#naive version with owner userId filter
+bucket_definitions:
+  by_user:
+    parameters: SELECT id as user_id FROM trellouser WHERE trellouser.id = token_parameters.user_id
+    data:
+      - SELECT * FROM trellouser WHERE id = bucket.user_id
+      - SELECT * FROM workspace WHERE userId = bucket.user_id
+      - SELECT * FROM board WHERE userId = bucket.user_id
+      - SELECT * FROM activity WHERE userId = bucket.user_id
+      - SELECT * FROM attachment WHERE userId = bucket.user_id
+      - SELECT * FROM card WHERE userId = bucket.user_id
+      - SELECT * FROM checklist WHERE userId = bucket.user_id
+      - SELECT * FROM comment WHERE userId = bucket.user_id
+      - SELECT * FROM listboard WHERE userId = bucket.user_id
+      - SELECT * FROM member WHERE userId = bucket.user_id
