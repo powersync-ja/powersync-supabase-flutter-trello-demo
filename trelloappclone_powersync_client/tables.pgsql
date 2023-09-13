@@ -105,6 +105,7 @@ ALTER TABLE ONLY "board"
 
 CREATE TABLE "listboard" (
   "id" uuid not null default gen_random_uuid (),
+  "workspaceId" uuid NOT NULL,
   "boardId" uuid NOT NULL,
   "userId" uuid NOT NULL,
   "name" text NOT NULL,
@@ -131,6 +132,7 @@ ALTER TABLE ONLY "listboard"
 
 CREATE TABLE "card" (
   "id" uuid not null default gen_random_uuid (),
+  "workspaceId" uuid NOT NULL,
   "listId" uuid NOT NULL,
   "userId" uuid NOT NULL,
   "name" text NOT NULL,
@@ -163,6 +165,7 @@ ALTER TABLE ONLY "card"
 
 CREATE TABLE "attachment" (
   "id" uuid not null default gen_random_uuid (),
+  "workspaceId" uuid NOT NULL,
   "userId" uuid NOT NULL,
   "cardId" uuid NOT NULL,
   "attachment" text NOT NULL
@@ -188,6 +191,7 @@ ALTER TABLE ONLY "attachment"
 
 CREATE TABLE "checklist" (
   "id" uuid not null default gen_random_uuid (),
+  "workspaceId" uuid NOT NULL,
   "cardId" uuid NOT NULL,
   "name" text NOT NULL,
   "status" boolean NOT NULL
@@ -208,6 +212,7 @@ ALTER TABLE ONLY "checklist"
 
 CREATE TABLE "comment" (
   "id" uuid not null default gen_random_uuid (),
+  "workspaceId" uuid NOT NULL,
   "cardId" uuid NOT NULL,
   "userId" uuid NOT NULL,
   "description" text NOT NULL
@@ -233,6 +238,7 @@ ALTER TABLE ONLY "comment"
 
 CREATE TABLE "activity" (
   "id" uuid not null default gen_random_uuid (),
+  "workspaceId" uuid NOT NULL,
   "boardId" uuid,
   "userId" uuid NOT NULL,
   "cardId" uuid,

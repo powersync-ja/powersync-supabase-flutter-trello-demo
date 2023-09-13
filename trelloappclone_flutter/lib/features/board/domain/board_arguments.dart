@@ -2,7 +2,7 @@ import 'package:trelloappclone_powersync_client/trelloappclone_powersync_client.
 
 class BoardArguments {
   final Board board;
-  final String workspace;
+  final Workspace workspace;
 
   BoardArguments(this.board, this.workspace);
 }

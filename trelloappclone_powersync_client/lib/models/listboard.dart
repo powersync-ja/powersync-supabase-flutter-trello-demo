@@ -4,6 +4,7 @@ import 'card.dart';
 class Listboard {
   Listboard({
     required this.id,
+    required this.workspaceId,
     required this.boardId,
     required this.userId,
     required this.name,
@@ -12,6 +13,8 @@ class Listboard {
   });
 
   final String id;
+
+  final String workspaceId;
 
   final String boardId;
 
@@ -26,6 +29,7 @@ class Listboard {
   factory Listboard.fromRow(sqlite.Row row) {
     return Listboard(
         id: row['id'],
+        workspaceId: row['workspaceId'],
         boardId: row['boardId'],
         userId: row['userId'],
         name: row['name'],

@@ -221,6 +221,7 @@ mixin Service {
   Future<void> addList(Listboard lst) async {
     await client.listboard.createList(lst);
     createActivity(
+        workspaceId: lst.workspaceId,
         description: "${trello.user.name} added a new list ${lst.name}");
   }
 
@@ -229,6 +230,7 @@ mixin Service {
     Cardlist newcrd = await client.card.createCard(crd);
     createActivity(
         card: newcrd.id,
+        workspaceId: newcrd.workspaceId,
         description: "${trello.user.name} added a new card ${crd.name}");
   }
 
@@ -238,14 +240,16 @@ mixin Service {
 
     createActivity(
         card: crd.id,
+        workspaceId: crd.workspaceId,
         description: "${trello.user.name} updated the card ${crd.name}");
   }
 
   //create activity
   Future<void> createActivity(
-      {String? boardId, required String description, String? card}) async {
+      {required String workspaceId, String? boardId, required String description, String? card}) async {
     await client.activity.createActivity(Activity(
         id: randomUuid(),
+        workspaceId: workspaceId,
         boardId: boardId,
         userId: trello.user.id,
         cardId: card,
@@ -308,6 +312,7 @@ mixin Service {
   Future<void> insertAttachment(Cardlist crd, String path) async {
     await client.attachment.addAttachment(Attachment(
         id: randomUuid(),
+        workspaceId: crd.workspaceId,
         userId: trello.user.id,
         cardId: crd.id,
         attachment: path));

@@ -69,9 +69,10 @@ First, we need to understand the permissions from the app domain model:
 - A **workspace** is created by a user — this user can always see and edit the workspace.
 - A **workspace** has a specific *visibility*: private (only the owner can see it), workspace (only owner and members can see it), or public (anyone can see it).
 - A **workspace** has a list of *members* (users) that can see and edit the workspace, if the workspace is not private.
-- A **board** is created by a user — this user can always see and edit the board.
-- A **board** has a specific *visibility*: private (only the owner can see it), workspace (only owner and members belonging to the parent workspace can see it), or public (anyone can see it).
+- A **board** is created by a user — this user can always see and edit the board as long as the user can still access that workspace
+- A **board** has a specific *visibility*: private (only the owner can see it), workspace (only owner and members belonging to the parent workspace can see it)
 - A user can see (and edit) any of the **cards** and **lists** belonging to a **board** that they have access to.
+- A user can see (and edit) any of the **checklists**, **comments**, and **attachments** belonging to a **card** that they have access to.
 
 Also have a look at `trelloappclone_flutter/lib/utils/service.dart` for the access patterns used by the app code.
 
@@ -150,3 +151,10 @@ Do we fix this or not?
 * Email confirmation flow
 * Update of password or email
 * Enhancing UX of app (there are many irritating issues and things not working yet in the original app)
+
+## Changes from original Trello clone app
+
+TODO: decide if we want to discuss this in the tutorial.
+
+- Updated data model so that all `id` fields are Strings, and using UUIDs (it was auto-increment integer fields in the original app)
+- Updated data model so that all entities refers to the `workspaceId` of workspace in which it was created (this facilitates the sync rules)

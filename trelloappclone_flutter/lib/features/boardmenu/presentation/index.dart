@@ -178,7 +178,7 @@ class _BoardMenuState extends State<BoardMenu> {
           ),
           //TODO: figure out what is going on here
           Activities(Cardlist(
-              id: "todo", listId: "todo", userId: trello.user.id, name: ""))
+              id: "todo", workspaceId: trello.selectedWorkspace.id, listId: "todo", userId: trello.user.id, name: ""))
         ],
       )),
     );

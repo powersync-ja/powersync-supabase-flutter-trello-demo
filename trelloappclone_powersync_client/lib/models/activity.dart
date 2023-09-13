@@ -2,6 +2,7 @@ import 'package:powersync/sqlite3.dart' as sqlite;
 
 class Activity {
   final String id;
+  final String workspaceId;
 
   final String? boardId;
 
@@ -15,6 +16,7 @@ class Activity {
 
   Activity({
     required this.id,
+    required this.workspaceId,
     this.boardId,
     required this.userId,
     this.cardId,
@@ -25,6 +27,7 @@ class Activity {
   factory Activity.fromRow(sqlite.Row row) {
     return Activity(
         id: row['id'],
+        workspaceId: row['workspaceId'],
         boardId: row['boardId'],
         userId: row['userId'],
         cardId: row['cardId'],

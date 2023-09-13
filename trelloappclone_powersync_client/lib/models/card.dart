@@ -3,6 +3,7 @@ import 'package:powersync/sqlite3.dart' as sqlite;
 class Cardlist {
   Cardlist({
     required this.id,
+    required this.workspaceId,
     required this.listId,
     required this.userId,
     required this.name,
@@ -16,6 +17,8 @@ class Cardlist {
   });
 
   final String id;
+
+  final String workspaceId;
 
   final String listId;
 
@@ -40,6 +43,7 @@ class Cardlist {
   factory Cardlist.fromRow(sqlite.Row row) {
     return Cardlist(
         id: row['id'],
+        workspaceId: row['workspaceId'],
         listId: row['listId'],
         userId: row['userId'],
         name: row['name'],

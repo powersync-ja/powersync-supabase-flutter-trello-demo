@@ -130,7 +130,7 @@ class _HomeState extends State<Home> with Service {
         title: Text(brd[j].name),
         onTap: () {
           Navigator.pushNamed(context, BoardScreen.routeName,
-              arguments: BoardArguments(brd[j], wkspc.name));
+              arguments: BoardArguments(brd[j], wkspc));
         },
       ));
     }

@@ -19,8 +19,11 @@ class TrelloProvider extends ChangeNotifier {
   List<Listboard> _lstbrd = [];
   List<Listboard> get lstbrd => _lstbrd;
 
-  late Board _brd;
-  Board get brd => _brd;
+  late Board _selectedBoard;
+  Board get selectedBoard => _selectedBoard;
+
+  late Workspace _selectedWorkspace;
+  Workspace get selectedWorkspace => _selectedWorkspace;
 
   void setUser(TrelloUser user) {
     _user = user;
@@ -48,7 +51,13 @@ class TrelloProvider extends ChangeNotifier {
   }
 
   void setSelectedBoard(Board brd) {
-    _brd = brd;
+    _selectedBoard = brd;
     notifyListeners();
   }
+
+  void setSelectedWorkspace(Workspace workspace) {
+    _selectedWorkspace = workspace;
+    notifyListeners();
+  }
+
 }

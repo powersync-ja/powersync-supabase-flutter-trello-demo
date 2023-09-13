@@ -25,10 +25,11 @@ class _ActivityRepository extends _Repository {
 
   Future<bool> createActivity(Activity activity) async {
     final results = await client.getDBExecutor().execute('''INSERT INTO
-           activity(id, boardId, userId, cardId, description, dateCreated)
-           VALUES(?, ?, ?, ?, ?, datetime())
+           activity(id, workspaceId, boardId, userId, cardId, description, dateCreated)
+           VALUES(?, ?, ?, ?, ?, ?, datetime())
            RETURNING *''', [
       activity.id,
+      activity.workspaceId,
       activity.boardId,
       activity.userId,
       activity.cardId,
@@ -50,10 +51,11 @@ class _AttachmentRepository extends _Repository {
 
   Future<Attachment> addAttachment(Attachment attachment) async {
     final results = await client.getDBExecutor().execute('''INSERT INTO
-           attachment(id, userId, cardId, attachment)
-           VALUES(?, ?, ?, ?)
+           attachment(id, workspaceId, userId, cardId, attachment)
+           VALUES(?, ?, ?, ?, ?)
            RETURNING *''', [
       attachment.id,
+      attachment.workspaceId,
       attachment.userId,
       attachment.cardId,
       attachment.attachment
@@ -167,14 +169,15 @@ class _CardlistRepository extends _Repository {
 
   String get insertQuery => '''
   INSERT INTO
-           card(id, listId, userId, name, description, startDate, dueDate, attachment, archived, checklist, comments)
-           VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
+           card(id, workspaceId, listId, userId, name, description, startDate, dueDate, attachment, archived, checklist, comments)
+           VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)
   ''';
 
   Future<Cardlist> createCard(Cardlist cardlist) async {
     final results =
         await client.getDBExecutor().execute('$insertQuery RETURNING *', [
       cardlist.id,
+      cardlist.workspaceId,
       cardlist.listId,
       cardlist.userId,
       cardlist.name,
@@ -229,14 +232,15 @@ class _CheckListRepository extends _Repository {
 
   String get insertQuery => '''
   INSERT INTO
-           checklist(id, cardId, name, status)
-           VALUES(?1, ?2, ?3, ?4)
+           checklist(id, workspaceId, cardId, name, status)
+           VALUES(?1, ?2, ?3, ?4, ?5)
   ''';
 
   Future<Checklist> createChecklist(Checklist checklist) async {
     final results = await client.getDBExecutor().execute(
         '$insertQuery RETURNING *', [
       checklist.id,
+      checklist.workspaceId,
       checklist.cardId,
       checklist.name,
       boolAsInt(checklist.status)
@@ -294,14 +298,14 @@ class _CommentRepository extends _Repository {
 
   String get insertQuery => '''
   INSERT INTO
-           comment(id, cardId, userId, description)
-           VALUES(?1, ?2, ?3, ?4)
+           comment(id, workspaceId, cardId, userId, description)
+           VALUES(?1, ?2, ?3, ?4, ?5)
   ''';
 
   Future<Comment> createComment(Comment comment) async {
     final results = await client.getDBExecutor().execute(
         '$insertQuery RETURNING *',
-        [comment.id, comment.cardId, comment.userId, comment.description]);
+        [comment.id, comment.workspaceId, comment.cardId, comment.userId, comment.description]);
     if (results.isEmpty) {
       throw Exception("Failed to add Comment");
     } else {
@@ -344,14 +348,14 @@ class _ListboardRepository extends _Repository {
 
   String get insertQuery => '''
   INSERT INTO
-           listboard(id, boardId, userId, name, archived)
-           VALUES(?1, ?2, ?3, ?4, ?5)
+           listboard(id, workspaceId, boardId, userId, name, archived)
+           VALUES(?1, ?2, ?3, ?4, ?5, ?6)
   ''';
 
   Future<Listboard> createList(Listboard lst) async {
     final results = await client.getDBExecutor().execute(
         '$insertQuery RETURNING *',
-        [lst.id, lst.boardId, lst.userId, lst.name, boolAsInt(lst.archived)]);
+        [lst.id, lst.workspaceId, lst.boardId, lst.userId, lst.name, boolAsInt(lst.archived)]);
     if (results.isEmpty) {
       throw Exception("Failed to add Listboard");
     } else {

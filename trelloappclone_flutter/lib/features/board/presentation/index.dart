@@ -41,6 +41,7 @@ class _BoardScreenState extends State<BoardScreen> with Service {
     width = MediaQuery.of(context).size.width * 0.7;
     final args = ModalRoute.of(context)!.settings.arguments as BoardArguments;
     trello.setSelectedBoard(args.board);
+    trello.setSelectedWorkspace(args.workspace);
 
     return WillPopScope(
         onWillPop: () async {
@@ -84,6 +85,7 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                           if (show) {
                             addList(Listboard(
                                 id: randomUuid(),
+                                workspaceId: args.workspace.id,
                                 boardId: args.board.id,
                                 userId: trello.user.id,
                                 name: nameController.text));
@@ -94,6 +96,7 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                           } else {
                             addCard(Cardlist(
                                 id: randomUuid(),
+                                workspaceId: args.workspace.id,
                                 listId: trello.lstbrd[selectedList].id,
                                 userId: trello.user.id,
                                 name: textEditingControllers[selectedList]!
@@ -145,6 +148,7 @@ class _BoardScreenState extends State<BoardScreen> with Service {
 
           updateCard(Cardlist(
               id: trello.lstbrd[oldListIndex].cards![oldItemIndex].id,
+              workspaceId: trello.selectedWorkspace.id,
               listId: trello.lstbrd[listIndex].id,
               userId: trello.user.id,
               name: item.title!));
@@ -153,7 +157,7 @@ class _BoardScreenState extends State<BoardScreen> with Service {
           Navigator.pushNamed(context, CardDetails.routeName,
               arguments: CardDetailArguments(
                   trello.lstbrd[selectedList].cards![itemIndex!],
-                  trello.brd,
+                  trello.selectedBoard,
                   trello.lstbrd[selectedList]));
         },
         item: Card(

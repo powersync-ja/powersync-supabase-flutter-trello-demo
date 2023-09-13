@@ -51,6 +51,7 @@ class _CardDetailsState extends State<CardDetails> with Service {
                       if (showChecklist) {
                         createChecklist(Checklist(
                             id: randomUuid(),
+                            workspaceId: args.crd.workspaceId,
                             cardId: args.crd.id,
                             name: checklistController.text,
                             status: false));
