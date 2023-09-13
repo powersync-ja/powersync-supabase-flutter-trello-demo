@@ -125,7 +125,8 @@ This tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/
 - [X] Update to use Supabase Auth
 - [X] implement basic global sync rules
 - [X] Test if global syncing works
-- [ ] Tweak sync rules to enforce permissions (according to workspace + board visibility and members)
+- [ ] Tweak datamodel to allow per workspace lookups: add workspaceId reference to various entities (update on supabase, etc)
+- [ ] Tweak sync rules to enforce permissions (according to workspace owner, visibility, and members)
 - [ ] Test if permissions are enforced by Powersync
 - [ ] Look at using watch queries (for when other users update data)
 - [ ] Look at using transactions

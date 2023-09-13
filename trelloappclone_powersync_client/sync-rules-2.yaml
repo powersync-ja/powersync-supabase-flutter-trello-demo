@@ -1,15 +1,24 @@
-#naive version with owner userId filter
 bucket_definitions:
-  by_user:
+  user_info:
+    # this allows syncing of trellouser record for logged-in user
     parameters: SELECT id as user_id FROM trellouser WHERE trellouser.id = token_parameters.user_id
     data:
       - SELECT * FROM trellouser WHERE id = bucket.user_id
-      - SELECT * FROM workspace WHERE userId = bucket.user_id
-      - SELECT * FROM board WHERE userId = bucket.user_id
-      - SELECT * FROM activity WHERE userId = bucket.user_id
-      - SELECT * FROM attachment WHERE userId = bucket.user_id
-      - SELECT * FROM card WHERE userId = bucket.user_id
-      - SELECT * FROM checklist WHERE userId = bucket.user_id
-      - SELECT * FROM comment WHERE userId = bucket.user_id
-      - SELECT * FROM listboard WHERE userId = bucket.user_id
-      - SELECT * FROM member WHERE userId = bucket.user_id
+  by_workspace:
+    # the root entities (workspaces, boards, members) are loaded by workspaceId, thus linked to the workspaces (a) owned by this user, (b) where this user is a member, or (c) which are public
+    # TODO: update datamodel so include workspaceId for entities not yet referencing it
+    parameters:
+      - SELECT id as workspace_id FROM workspace WHERE
+         userId = token_parameters.user_id OR visibility = "Public"
+      - SELECT workspaceId as workspace_id FROM member WHERE
+                 userId = token_parameters.user_id
+    data:
+      - SELECT * FROM workspace WHERE workspace.id = bucket.workspace_id
+      - SELECT * FROM board WHERE workspaceId = bucket.workspace_id
+      - SELECT * FROM member WHERE workspaceId = bucket.workspace_id
+      - SELECT * FROM listboard WHERE workspaceId = bucket.workspace_id
+      - SELECT * FROM card WHERE workspaceId = bucket.workspace_id
+      - SELECT * FROM checklist WHERE workspaceId = bucket.workspace_id
+      - SELECT * FROM activity WHERE workspaceId = bucket.workspace_id
+      - SELECT * FROM comment WHERE workspaceId = bucket.workspace_id
+      - SELECT * FROM attachment WHERE workspaceId = bucket.workspace_id
