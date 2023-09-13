@@ -4,32 +4,20 @@ bucket_definitions:
     parameters: SELECT id as user_id FROM trellouser WHERE trellouser.id = token_parameters.user_id
     data:
       - SELECT * FROM trellouser WHERE id = bucket.user_id
-  owned_workspaces:
+  by_workspace:
     # the root entities (workspaces, boards, members) are loaded by workspaceId, thus linked to the workspaces (a) owned by this user, (b) where this user is a member, or (c) which are public
-    parameters: |
-      SELECT id as workspace_id FROM workspace WHERE
-         userId = token_parameters.user_id OR visibility = "Public"
-      SELECT workspaceId as workspace_id FROM member WHERE
-                 userId = token_parameters.user_id
+    parameters:
+      - SELECT id as workspace_id FROM workspace WHERE
+        userId = token_parameters.user_id OR visibility = "Public"
+      - SELECT workspaceId as workspace_id FROM member WHERE
+        userId = token_parameters.user_id
     data:
       - SELECT * FROM workspace WHERE workspace.id = bucket.workspace_id
-      - SELECT * FROM board WHERE workspaceId = bucket.workspace_id
-      - SELECT * FROM member WHERE workspaceId = bucket.workspace_id
-  by_board:
-    # Lists are loaded by boardId
-    parameters: SELECT id as board_id FROM board #will this automagically restrict to only boards selected in previous bucket def?
-    data:
-      - SELECT * FROM listboard WHERE boardId = bucket.board_id
-  by_list:
-    # Cards are loaded by listId
-    parameters: SELECT id as list_id FROM listboard #will this automagically restrict to only listboards selected in previous bucket def?
-    data:
-      - SELECT * FROM card WHERE listId = bucket.list_id
-  by_card:
-    # Checklists, Activities, Comments and Attachments are loaded by cardId
-    parameters: SELECT id as card_id FROM card #will this automagically restrict to only cards selected in previous bucket def?
-    data:
-      - SELECT * FROM checklist WHERE cardId = bucket.card_id
-      - SELECT * FROM activity WHERE cardId = bucket.card_id
-      - SELECT * FROM comment WHERE cardId = bucket.card_id
-      - SELECT * FROM attachment WHERE cardId = bucket.card_id
+      - SELECT * FROM board WHERE board.workspaceId = bucket.workspace_id
+      - SELECT * FROM member WHERE member.workspaceId = bucket.workspace_id
+      - SELECT * FROM listboard WHERE listboard.workspaceId = bucket.workspace_id
+      - SELECT * FROM card WHERE card.workspaceId = bucket.workspace_id
+      - SELECT * FROM checklist WHERE checklist.workspaceId = bucket.workspace_id
+      - SELECT * FROM activity WHERE activity.workspaceId = bucket.workspace_id
+      - SELECT * FROM comment WHERE comment.workspaceId = bucket.workspace_id
+      - SELECT * FROM attachment WHERE attachment.workspaceId = bucket.workspace_id
