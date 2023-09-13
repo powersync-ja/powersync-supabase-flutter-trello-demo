@@ -1,5 +1,6 @@
+#naive version with global access
 bucket_definitions:
-  global_admins:
+  global:
     parameters: |
       SELECT FROM trellouser WHERE
          trellouser.id = token_parameters.user_id
