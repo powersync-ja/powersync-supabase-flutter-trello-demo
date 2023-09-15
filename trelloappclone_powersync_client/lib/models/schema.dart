@@ -10,6 +10,7 @@ const schema = Schema(([
   //   description: String
   //   dateCreated: DateTime
   Table('activity', [
+    Column.text('workspaceId'),
     Column.text('boardId'),
     Column.text('userId'),
     Column.text('cardId'),
@@ -27,6 +28,7 @@ const schema = Schema(([
   //   cardId: int, parent=card
   //   attachment: String
   Table('attachment', [
+    Column.text('workspaceId'),
     Column.text('userId'),
     Column.text('cardId'),
     Column.text('attachment'),
@@ -89,6 +91,7 @@ const schema = Schema(([
   //   checklist: bool?
   //   comments: bool?
   Table('card', [
+    Column.text('workspaceId'),
     Column.text('listId'),
     Column.text('userId'),
     Column.text('name'),
@@ -110,6 +113,7 @@ const schema = Schema(([
   //   name: String
   //   status: bool
   Table('checklist', [
+    Column.text('workspaceId'),
     Column.text('cardId'),
     Column.text('name'),
     Column.integer('status'),
@@ -123,6 +127,7 @@ const schema = Schema(([
   //   userId: int, parent=trellouser
   //   description: String
   Table('comment', [
+    Column.text('workspaceId'),
     Column.text('cardId'),
     Column.text('userId'),
     Column.text('description'),
@@ -139,6 +144,7 @@ const schema = Schema(([
   //   archived: bool?
   //   cards: List<Cardlist>?, api
   Table('listboard', [
+    Column.text('workspaceId'),
     Column.text('boardId'),
     Column.text('userId'),
     Column.text('name'),
@@ -160,7 +166,6 @@ const schema = Schema(([
     Column.text('name'),
     Column.text('role'),
   ], indexes: [
-    Index('workspace', [IndexedColumn('workspaceId')]),
     Index('user', [IndexedColumn('userId')]),
   ]),
   //class: User

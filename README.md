@@ -78,19 +78,48 @@ Also have a look at `trelloappclone_flutter/lib/utils/service.dart` for the acce
 
 Let us explore how we can use sync rules to enforce these permissions and access patterns.
 
-TODO steps:
+First we want to sync the relevant `trellouser` record for the logged-in user, based on the user identifier:
 
-1. add workspace-based bucket
-1. add board-based bucket
-1. ???
+```yaml
+bucket_definitions:
+  user_info:
+    # this allows syncing of trellouser record for logged-in user
+    parameters: SELECT id as user_id FROM trellouser WHERE trellouser.id = token_parameters.user_id
+    data:
+      - SELECT * FROM trellouser WHERE trellouser.id = bucket.user_id
+```
 
+Then we want to look up all the workspaces (a) owned by this user, (b) where this user is a member, or (c) which are public.
+
+```yaml
+  by_workspace:
+    # the entities are filtered by workspaceId, thus linked to the workspaces (a) owned by this user, (b) where this user is a member, or (c) which are public
+    # Note: the quotes for "workspaceId" and "userId" is important, since otherwise postgres does not deal well with non-lowercase identifiers
+    parameters:
+      - SELECT id as workspace_id FROM workspace WHERE
+        workspace."userId" = token_parameters.user_id
+      - SELECT "workspaceId" as workspace_id FROM member WHERE
+        member."userId" = token_parameters.user_id
+      - SELECT id as workspace_id FROM workspace WHERE
+        visibility = "Public"
+    data:
+      - SELECT * FROM workspace WHERE workspace.id = bucket.workspace_id
+      - SELECT * FROM board WHERE board."workspaceId" = bucket.workspace_id
+      - SELECT * FROM member WHERE member."workspaceId" = bucket.workspace_id
+      - SELECT * FROM listboard WHERE listboard."workspaceId" = bucket.workspace_id
+      - SELECT * FROM card WHERE card."workspaceId" = bucket.workspace_id
+      - SELECT * FROM checklist WHERE checklist."workspaceId" = bucket.workspace_id
+      - SELECT * FROM activity WHERE activity."workspaceId" = bucket.workspace_id
+      - SELECT * FROM comment WHERE comment."workspaceId" = bucket.workspace_id
+      - SELECT * FROM attachment WHERE attachment."workspaceId" = bucket.workspace_id
+```
+
+Have a look at `trelloappclone_powersync_client.dart/sync-rules-1.yaml` for the full set of rules; you can copy and paste this to `sync-rules.yaml` under your Powersync project instance, and deploy the rules.
 
 ## Build & Run the App
 
 - Run ``` flutter pub get ``` to install the necessary packages on your command line that's navigated to the root of the project.
-- Invoke the ``` flutter run ``` command.
-- TODO: must run on iOS or Android (no web app support yet)
-
+- Invoke the ``` flutter run ``` command, and select either an Android device/emulator or iOS device/simulator as destination (Powersync does not support flutter web app yet)
 
 ### Importing / Generating Data
 
@@ -126,9 +155,9 @@ This tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/
 - [X] Update to use Supabase Auth
 - [X] implement basic global sync rules
 - [X] Test if global syncing works
-- [ ] Tweak datamodel to allow per workspace lookups: add workspaceId reference to various entities (update on supabase, etc)
-- [ ] Tweak sync rules to enforce permissions (according to workspace owner, visibility, and members)
-- [ ] Test if permissions are enforced by Powersync
+- [X] Tweak datamodel to allow per workspace lookups: add workspaceId reference to various entities (update on supabase, etc)
+- [X] Tweak sync rules to enforce permissions (according to workspace owner, visibility, and members)
+- [X] Test if permissions are enforced by Powersync
 - [ ] Look at using watch queries (for when other users update data)
 - [ ] Look at using transactions
 - [ ] Data generation (or import) functionality for testing bigger datasets

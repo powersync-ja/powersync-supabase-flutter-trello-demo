@@ -3,21 +3,24 @@ bucket_definitions:
     # this allows syncing of trellouser record for logged-in user
     parameters: SELECT id as user_id FROM trellouser WHERE trellouser.id = token_parameters.user_id
     data:
-      - SELECT * FROM trellouser WHERE id = bucket.user_id
+      - SELECT * FROM trellouser WHERE trellouser.id = bucket.user_id
   by_workspace:
-    # the root entities (workspaces, boards, members) are loaded by workspaceId, thus linked to the workspaces (a) owned by this user, (b) where this user is a member, or (c) which are public
+    # the entities are filtered by workspaceId, thus linked to the workspaces (a) owned by this user, (b) where this user is a member, or (c) which are public
+    # Note: the quotes for "workspaceId" and "userId" is important, since otherwise postgres does not deal well with non-lowercase identifiers
     parameters:
       - SELECT id as workspace_id FROM workspace WHERE
-        userId = token_parameters.user_id OR visibility = "Public"
-      - SELECT workspaceId as workspace_id FROM member WHERE
-        userId = token_parameters.user_id
+        workspace."userId" = token_parameters.user_id # OR visibility = "Public"
+      - SELECT "workspaceId" as workspace_id FROM member WHERE
+        member."userId" = token_parameters.user_id
+      - SELECT id as workspace_id FROM workspace WHERE
+        visibility = "Public"
     data:
       - SELECT * FROM workspace WHERE workspace.id = bucket.workspace_id
-      - SELECT * FROM board WHERE board.workspaceId = bucket.workspace_id
-      - SELECT * FROM member WHERE member.workspaceId = bucket.workspace_id
-      - SELECT * FROM listboard WHERE listboard.workspaceId = bucket.workspace_id
-      - SELECT * FROM card WHERE card.workspaceId = bucket.workspace_id
-      - SELECT * FROM checklist WHERE checklist.workspaceId = bucket.workspace_id
-      - SELECT * FROM activity WHERE activity.workspaceId = bucket.workspace_id
-      - SELECT * FROM comment WHERE comment.workspaceId = bucket.workspace_id
-      - SELECT * FROM attachment WHERE attachment.workspaceId = bucket.workspace_id
+      - SELECT * FROM board WHERE board."workspaceId" = bucket.workspace_id
+      - SELECT * FROM member WHERE member."workspaceId" = bucket.workspace_id
+      - SELECT * FROM listboard WHERE listboard."workspaceId" = bucket.workspace_id
+      - SELECT * FROM card WHERE card."workspaceId" = bucket.workspace_id
+      - SELECT * FROM checklist WHERE checklist."workspaceId" = bucket.workspace_id
+      - SELECT * FROM activity WHERE activity."workspaceId" = bucket.workspace_id
+      - SELECT * FROM comment WHERE comment."workspaceId" = bucket.workspace_id
+      - SELECT * FROM attachment WHERE attachment."workspaceId" = bucket.workspace_id
