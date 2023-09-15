@@ -112,18 +112,18 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                 ),
           body: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: FutureBuilder(
-                  initialData: lists,
-                  future: loadBoardView(args),
+              child: StreamBuilder(
+                  stream: getListsByBoardStream(args.board),
                   builder: (BuildContext context,
-                      AsyncSnapshot<List<BoardList>> snapshot) {
-                    if (snapshot.hasData) {
-                      List<BoardList> children =
-                          snapshot.data as List<BoardList>;
+                      AsyncSnapshot<List<Listboard>> snapshot) {
 
-                      if (children.isNotEmpty) {
+                    if (snapshot.hasData) {
+                      List<Listboard> lists =
+                          snapshot.data as List<Listboard>;
+
+                      if (lists.isNotEmpty) {
                         return BoardView(
-                          lists: children,
+                          lists: loadBoardView(lists),
                           boardViewController: boardViewController,
                         );
                       }
@@ -310,15 +310,14 @@ class _BoardScreenState extends State<BoardScreen> with Service {
     );
   }
 
-  Future<List<BoardListObject>> generateBoardListObject(
-      BoardArguments args) async {
+  List<BoardListObject> generateBoardListObject(
+      List<Listboard> lists) {
     final List<BoardListObject> listData = [];
 
-    List<Listboard> getLists = await getListsByBoard(args.board);
-    for (int i = 0; i < getLists.length; i++) {
+    for (int i = 0; i < lists.length; i++) {
       listData.add(BoardListObject(
-          title: getLists[i].name,
-          items: generateBoardItemObject(getLists[i].cards!)));
+          title: lists[i].name,
+          items: generateBoardItemObject(lists[i].cards!)));
     }
 
     return listData;
@@ -332,8 +331,8 @@ class _BoardScreenState extends State<BoardScreen> with Service {
     return items;
   }
 
-  Future<List<BoardList>> loadBoardView(BoardArguments args) async {
-    List<BoardListObject> data = await generateBoardListObject(args);
+  List<BoardList> loadBoardView(List<Listboard> Listboards) {
+    List<BoardListObject> data = generateBoardListObject(Listboards);
     lists = [];
 
     for (int i = 0; i < data.length; i++) {

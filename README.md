@@ -130,11 +130,10 @@ TODO
 TODO: explain how it sticks together
 
 1. overview of layers (app, client lib)
-2. end-to-end discussion of how an entity is created, updated, deleted
-6. discussion on sync rules applied
-3. discussion of watch query example
-4. discussion of transaction example
-5. discussion on IDs?
+1. end-to-end discussion of how an entity is created, updated, watched, deleted
+1. discussion of watch query example
+1. discussion of transaction example?
+1. discussion on IDs?
 
 ## Feedback
 

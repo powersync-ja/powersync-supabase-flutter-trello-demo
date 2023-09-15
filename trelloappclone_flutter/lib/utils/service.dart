@@ -233,6 +233,14 @@ mixin Service {
     return brdlist;
   }
 
+  //watch lists by board via Stream
+  Stream<List<Listboard>> getListsByBoardStream(Board brd) {
+    return client.listboard.watchListsByBoard(boardId: brd.id).map((lists) {
+      trello.setListBoard(lists);
+      return lists;
+    });
+  }
+
   //add list
   Future<void> addList(Listboard lst) async {
     await client.listboard.createList(lst);

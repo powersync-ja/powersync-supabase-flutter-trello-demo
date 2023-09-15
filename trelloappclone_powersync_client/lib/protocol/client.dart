@@ -346,6 +346,24 @@ class _ListboardRepository extends _Repository {
     return lists;
   }
 
+  Stream<List<Listboard>> watchListsByBoard({required String boardId}) {
+    //first we get the listboards
+    return client.getDBExecutor().watch('''
+          SELECT * FROM listboard WHERE boardId = ?
+           ''', parameters: [boardId]).map((event){
+      List<Listboard> lists =
+        event.map((row) => Listboard.fromRow(row)).toList();
+
+      //then we set the cards for each listboard
+      for (Listboard list in lists) {
+        client.card.getCardsforList(list.id).then((cards){
+        list.cards = cards;});
+      }
+
+      return lists;
+    });
+  }
+
   String get insertQuery => '''
   INSERT INTO
            listboard(id, workspaceId, boardId, userId, name, archived)
