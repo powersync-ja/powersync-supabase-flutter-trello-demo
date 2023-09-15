@@ -188,6 +188,14 @@ mixin Service {
     return boards;
   }
 
+  //watch boards of a specific workspace by Workspace ID via a stream
+  Stream<List<Board>> getBoardsStream(String workspaceId) {
+    return client.workspace.watchBoardsByWorkspace(workspaceId: workspaceId).map((boards) {
+      trello.setBoards(boards);
+      return boards;
+    });
+  }
+
   //update workspace
   Future<bool> updateWorkspace(Workspace wkspc) async {
     return await client.workspace.updateWorkspace(wkspc);

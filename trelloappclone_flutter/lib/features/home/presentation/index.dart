@@ -103,8 +103,8 @@ class _HomeState extends State<Home> with Service {
 
       workspacesandboards.add(workspace);
 
-      workspacesandboards.add(FutureBuilder(
-        future: getBoards(wkspcs[i].id!),
+      workspacesandboards.add(StreamBuilder(
+        stream: getBoardsStream(wkspcs[i].id),
         builder: (BuildContext context, AsyncSnapshot<List<Board>> snapshot) {
           if (snapshot.hasData) {
             List<Board> children = snapshot.data as List<Board>;

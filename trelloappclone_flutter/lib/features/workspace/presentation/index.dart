@@ -63,8 +63,8 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> with Service {
                             padding: EdgeInsets.only(left: 8.0),
                             child: Text("Your Workspace boards")),
                       ),
-                      FutureBuilder(
-                        future: getBoards(args.wkspc.id!),
+                      StreamBuilder(
+                        stream: getBoardsStream(args.wkspc.id),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             List<Board> children = snapshot.data as List<Board>;

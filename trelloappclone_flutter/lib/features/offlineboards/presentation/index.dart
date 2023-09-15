@@ -52,8 +52,8 @@ class _OfflineBoardsState extends State<OfflineBoards> with Service {
 
       workspacesboards.add(workspace);
 
-      workspacesboards.add(FutureBuilder(
-          future: getBoards(wkspcs[i].id!),
+      workspacesboards.add(StreamBuilder(
+          stream: getBoardsStream(wkspcs[i].id),
           builder: (BuildContext context, AsyncSnapshot<List<Board>> snapshot) {
             if (snapshot.hasData) {
               List<Board> children = snapshot.data as List<Board>;

@@ -529,6 +529,15 @@ class _WorkspaceRepository extends _Repository {
     return results.map((row) => Board.fromRow(row)).toList();
   }
 
+  Stream<List<Board>> watchBoardsByWorkspace(
+      {required String workspaceId}) {
+    return client.getDBExecutor().watch('''
+          SELECT * FROM board WHERE workspaceId = ?
+           ''', parameters: [workspaceId]).map((event) {
+      return event.map((row) => Board.fromRow(row)).toList();
+    });
+  }
+
   Future<bool> updateWorkspace(Workspace workspace) async {
     await client.getDBExecutor().execute('''
           UPDATE workspace
