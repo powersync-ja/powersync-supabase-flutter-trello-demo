@@ -24,8 +24,8 @@ class _OfflineBoardsState extends State<OfflineBoards> with Service {
       ),
       drawer: const CustomDrawer(),
       body: SingleChildScrollView(
-          child: FutureBuilder(
-              future: getWorkspaces(),
+          child: StreamBuilder(
+              stream: getWorkspacesStream(),
               builder: (BuildContext context,
                   AsyncSnapshot<List<Workspace>> snapshot) {
                 if (snapshot.hasData) {

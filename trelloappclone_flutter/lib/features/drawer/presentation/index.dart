@@ -75,8 +75,8 @@ class _CustomDrawerState extends State<CustomDrawer> with Service {
                     padding: EdgeInsets.all(8.0),
                     child: Text("Workspaces"),
                   ),
-                  FutureBuilder(
-                    future: getWorkspaces(),
+                  StreamBuilder(
+                    stream: getWorkspacesStream(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         List<Workspace> children =

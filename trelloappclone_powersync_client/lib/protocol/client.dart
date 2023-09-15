@@ -496,6 +496,20 @@ class _WorkspaceRepository extends _Repository {
     return workspaces;
   }
 
+  Stream<List<Workspace>> watchWorkspacesByUser({required String userId}) {
+    //First we get the workspaces
+    return client.getDBExecutor().watch('''
+          SELECT * FROM workspace WHERE userId = ?
+           ''', parameters: [userId]).map((event){
+      List<Workspace> workspaces = event.map((row) => Workspace.fromRow(row)).toList();
+      //Then we get the members for each workspace
+      for (Workspace workspace in workspaces) {
+        client.member.getMembersByWorkspace(workspaceId: workspace.id).then((members) => workspace.members = members);
+      }
+      return workspaces;
+    });
+  }
+
   Future<Workspace?> getWorkspaceById({required String workspaceId}) async {
     final results = await client.getDBExecutor().execute('''
           SELECT * FROM workspace WHERE id = ?

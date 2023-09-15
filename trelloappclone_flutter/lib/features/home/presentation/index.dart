@@ -38,8 +38,8 @@ class _HomeState extends State<Home> with Service {
         ],
       ),
       drawer: const CustomDrawer(),
-      body: FutureBuilder(
-          future: getWorkspaces(),
+      body: StreamBuilder(
+          stream: getWorkspacesStream(),
           builder:
               (BuildContext context, AsyncSnapshot<List<Workspace>> snapshot) {
             if (snapshot.hasData) {

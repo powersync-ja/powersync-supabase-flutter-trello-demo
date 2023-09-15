@@ -162,6 +162,7 @@ This tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/
 - [ ] Look at using transactions
 - [ ] Data generation (or import) functionality for testing bigger datasets
 - [ ] README/Tutorial writing & cleanup
+- [ ] Fix existing app bugs? (see list in next section)
 - [ ] (nice2have) seems Comments are broken in the app - look at making this work properly
 - [ ] (nice2have) get attachment uploads working with supabase
 - [ ] (nice2have) implement email confirmation flow
@@ -169,9 +170,12 @@ This tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/
 
 ## Bugs in app
 
+Pre-existing bugs in the trello clone app.
 Do we fix this or not?
 
 - [ ] comments does not seem to work
+- [ ] seems actual dragging of cards to different lists does not work?
+- [ ] creation of checklist items are flaky...
 - [ ] board details screen shows static data
 - [ ] board share option cannot include "public" as an option
 
@@ -180,6 +184,7 @@ Do we fix this or not?
 * Email confirmation flow
 * Update of password or email
 * Enhancing UX of app (there are many irritating issues and things not working yet in the original app)
+* Enhance state management - e.g. let `TrelloProvider` listen to streams, and notify changes, to simplify views
 
 ## Changes from original Trello clone app
 

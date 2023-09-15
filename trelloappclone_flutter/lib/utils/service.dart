@@ -154,6 +154,14 @@ mixin Service {
     return workspaces;
   }
 
+  //get a stream of workspaces for user, so we can react on distributed changes to it
+  Stream<List<Workspace>> getWorkspacesStream() {
+    return client.workspace.watchWorkspacesByUser(userId: trello.user.id).map((workspaces) {
+      trello.setWorkspaces(workspaces);
+      return workspaces;
+    });
+  }
+
   //create board
   createBoard(BuildContext context, Board brd) async {
     try {
