@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:random_name_generator/random_name_generator.dart';
+import 'package:trelloappclone_flutter/utils/config.dart';
 import 'package:trelloappclone_flutter/utils/service.dart';
 import 'package:trelloappclone_flutter/utils/trello_provider.dart';
 import 'package:trelloappclone_powersync_client/models/models.dart';
@@ -19,12 +20,13 @@ class DataGenerator with Service {
       '$prepend MVP App',
       '$prepend User Auth Service',
       '$prepend Transactions Service',
+      '$prepend Reporting Service',
       '$prepend DevOps'
     ];
   }
 
   List<String> _generateListNames(){
-    return ['To Do', 'In Progress', 'Done'];
+    return ['To Do', 'In Progress', 'To Test', 'Testing', 'To Release', 'Done'];
   }
 
   List<String> _generateCardNames(String prepend, int nrOfCards){
@@ -33,7 +35,7 @@ class DataGenerator with Service {
 
   createSampleWorkspace(String workspaceName, TrelloProvider trello, BuildContext context) async {
     Workspace workspace = await createWorkspace(context, name: workspaceName, description: 'Example workspace', visibility: 'Public');
-    _generateBoardNames(workspaceName).forEach((boardName) async {
+    for (String boardName in _generateBoardNames(workspaceName)) {
       //create board
       Board newBoard = Board(
           id: randomUuid(),
@@ -41,7 +43,7 @@ class DataGenerator with Service {
           userId: trello.user.id,
           name: boardName,
           visibility: 'Workspace',
-          background: trello.selectedBackground);
+          background: backgrounds[random.nextInt(16)]);
       await createBoard(context, newBoard);
 
       //create lists for each board
@@ -55,7 +57,7 @@ class DataGenerator with Service {
         await addList(newList);
 
         //create cards per list
-        _generateCardNames(listName, random.nextInt(5)).forEach((cardName) async {
+        for (String cardName in _generateCardNames(listName, random.nextInt(10))) {
           Cardlist newCard = Cardlist(
               id: randomUuid(),
               workspaceId: workspace.id,
@@ -76,8 +78,19 @@ class DataGenerator with Service {
               cardId: newCard.id,
               name: '${randomNames.name()} need to check this',
               status: false));
-        });
+          await createChecklist(Checklist(
+              id: randomUuid(),
+              workspaceId: workspace.id,
+              cardId: newCard.id,
+              name: '${randomNames.name()} need to check this',
+              status: false));
+          await createActivity(
+              workspaceId: workspace.id,
+              boardId: newBoard.id,
+              card: newCard.id,
+              description: '${randomNames.name()} updated this card');
+        };
       };
-    });
+    };
   }
 }
