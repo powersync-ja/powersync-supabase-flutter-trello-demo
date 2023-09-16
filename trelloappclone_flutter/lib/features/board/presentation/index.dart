@@ -118,15 +118,12 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                       AsyncSnapshot<List<Listboard>> snapshot) {
 
                     if (snapshot.hasData) {
-                      List<Listboard> lists =
+                      List<Listboard> listBoards =
                           snapshot.data as List<Listboard>;
-
-                      if (lists.isNotEmpty) {
-                        return BoardView(
-                          lists: loadBoardView(lists),
-                          boardViewController: boardViewController,
-                        );
-                      }
+                      return BoardView(
+                        lists: loadBoardView(listBoards),
+                        boardViewController: boardViewController,
+                      );
                     }
                     return const SizedBox.shrink();
                   })),

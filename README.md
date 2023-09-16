@@ -157,13 +157,15 @@ This tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/
 - [X] Tweak datamodel to allow per workspace lookups: add workspaceId reference to various entities (update on supabase, etc)
 - [X] Tweak sync rules to enforce permissions (according to workspace owner, visibility, and members)
 - [X] Test if permissions are enforced by Powersync
-- [ ] Look at using watch queries (for when other users update data)
-- [ ] Look at using transactions
-- [ ] Data generation (or import) functionality for testing bigger datasets
+- [X] Look at using watch queries (for when other users update data)
+- [X] BUG: look at listboard loading for new boards? (not seeing new empty lists..)
+- [ ] Data generation functionality for testing bigger datasets
+- [ ] Look at using transactions??
 - [ ] README/Tutorial writing & cleanup
 - [ ] Fix existing app bugs? (see list in next section)
 - [ ] (nice2have) seems Comments are broken in the app - look at making this work properly
 - [ ] (nice2have) get attachment uploads working with supabase
+- [ ] (nice2have) make members functionality in app useful (currently only adding the owner as member to a workspace)
 - [ ] (nice2have) implement email confirmation flow
 - [ ] (nice2have) improve logging
 
@@ -180,6 +182,7 @@ Do we fix this or not?
 
 ## Possible next steps
 
+* Allow user to import existing workspaces/board/etc from e.g. Trello (either via API or exported json)
 * Email confirmation flow
 * Update of password or email
 * Enhancing UX of app (there are many irritating issues and things not working yet in the original app)

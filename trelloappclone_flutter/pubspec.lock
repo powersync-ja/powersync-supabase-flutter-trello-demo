@@ -432,6 +432,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.5"
+  random_name_generator:
+    dependency: "direct main"
+    description:
+      name: random_name_generator
+      sha256: "8eaeae5777a23caecf697a91856b21a59ea360c3619f2c7de2114f411c89e07c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   realtime_client:
     dependency: transitive
     description:

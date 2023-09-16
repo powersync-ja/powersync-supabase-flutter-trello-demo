@@ -135,6 +135,8 @@ mixin Service {
       if (context.mounted) {
         Navigator.pushNamed(context, "/home");
       }
+
+      return addedWorkspace;
     } on Exception catch (e) {
       StatusAlert.show(context,
           duration: const Duration(seconds: 5),

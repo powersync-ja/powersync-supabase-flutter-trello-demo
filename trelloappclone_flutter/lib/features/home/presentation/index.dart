@@ -81,7 +81,8 @@ class _HomeState extends State<Home> with Service {
           children: const [
             CustomFloatingAction("Workspace", Icons.book, '/createworkspace'),
             CustomFloatingAction("Board", Icons.book, '/createboard'),
-            CustomFloatingAction("Card", Icons.card_membership, '/createcard')
+            CustomFloatingAction("Sample Workspace", Icons.dataset_outlined, '/generateworkspace'),
+            //CustomFloatingAction("Card", Icons.card_membership, '/createcard')
           ]),
     );
   }

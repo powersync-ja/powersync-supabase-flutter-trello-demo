@@ -20,7 +20,7 @@ class _CustomFloatingActionState extends State<CustomFloatingAction> {
       child: Text.rich(TextSpan(children: [
         WidgetSpan(
             child: SizedBox(
-          width: 100,
+          width: 150,
           height: 30,
           child: Card(
               child: Center(

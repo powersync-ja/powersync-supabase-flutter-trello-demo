@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:trelloappclone_flutter/features/generateworkspace/presentation/index.dart';
 import 'package:trelloappclone_flutter/utils/trello_provider.dart';
 import 'package:trelloappclone_powersync_client/trelloappclone_powersync_client.dart';
 import 'package:logging/logging.dart';
@@ -89,6 +90,7 @@ class MyApp extends StatelessWidget {
         '/invitemember': (context) => const InviteMember(),
         '/createworkspace': (context) => const CreateWorkspace(),
         '/createboard': (context) => const CreateBoard(),
+        '/generateworkspace': (context) => const GenerateWorkspace(),
         '/boardbackground': (context) => const BoardBackground(),
         '/createcard': (context) => const CreateCard(),
         BoardScreen.routeName: (context) => const BoardScreen(),
