@@ -264,7 +264,10 @@ Now we can simply make use of a `StreamBuilder` to have a view component that up
                     child:
                         Column(children: buildWorkspacesAndBoards(children)));
               }
-            })
+            } else {
+              return Container();
+            }
+          })
 ```
 
 ### Changes from original Trello clone app
@@ -293,4 +296,4 @@ Below is a list of things that can be implemented to enhance the functionality a
 
 ## Acknowledgements
 
-This tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/Mobterest/serverpod_flutter_tutorial) by [Mobterest](https://www.instagram.com/mobterest/
+This tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/Mobterest/serverpod_flutter_tutorial) by [Mobterest](https://www.instagram.com/mobterest/)
