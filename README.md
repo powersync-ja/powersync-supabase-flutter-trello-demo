@@ -184,8 +184,9 @@ This tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/
 - [X] remember logged-in state (Supabase side remember auth session, but app not...)
 - [X] remove/hide/disable unused things (alternative logins, offline boards, my cards, members buttons)
 - [X] drag and drop must work
-- [ ] disable invalid login/signup options
-- [ ] test on Android
+- [X] disable invalid login/signup options
+- [ ] BUG: cards loaded inconsistently for boards
+- [X] test on Android
 - [ ] README/Tutorial writing & cleanup
 - [ ] Look at using transactions (if time, else in next round))
 

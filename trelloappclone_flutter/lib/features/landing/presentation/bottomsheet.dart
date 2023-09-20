@@ -39,42 +39,42 @@ class _LandingBottomSheetState extends State<LandingBottomSheet> {
             ),
           ),
           ListTile(
-            onTap: () {},
+            onTap: null,
             leading: Icon(
               MdiIcons.google,
-              color: brandColor,
+              color: Colors.grey,
             ),
             title: Text(
               (widget.type == Sign.signUp)
                   ? " SIGN UP WITH GOOGLE"
                   : "LOG IN WITH GOOGLE",
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
             ),
           ),
           ListTile(
-            onTap: () {},
+            onTap: null,
             leading: Icon(
               MdiIcons.microsoft,
-              color: brandColor,
+              color: Colors.grey,
             ),
             title: Text(
               (widget.type == Sign.signUp)
                   ? " SIGN UP WITH MICROSOFT"
                   : "LOG IN WITH MICROSOFT",
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
             ),
           ),
           ListTile(
-            onTap: () {},
+            onTap: null,
             leading: Icon(
               MdiIcons.apple,
-              color: brandColor,
+              color: Colors.grey,
             ),
             title: Text(
               (widget.type == Sign.signUp)
                   ? " SIGN UP WITH APPLE"
                   : "LOG IN WITH APPLE",
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
             ),
           )
         ],

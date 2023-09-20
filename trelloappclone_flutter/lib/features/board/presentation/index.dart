@@ -309,8 +309,9 @@ class _BoardScreenState extends State<BoardScreen> with Service {
 
     for (int i = 0; i < lists.length; i++) {
       listData.add(BoardListObject(
-          title: lists[i].name,
-          items: generateBoardItemObject(lists[i].cards!)));
+                  title: lists[i].name,
+                  items: generateBoardItemObject(lists[i].cards!))
+        );
     }
 
     return listData;

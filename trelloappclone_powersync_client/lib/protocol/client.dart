@@ -351,14 +351,14 @@ class _ListboardRepository extends _Repository {
     //first we get the listboards
     return client.getDBExecutor().watch('''
           SELECT * FROM listboard WHERE boardId = ?
-           ''', parameters: [boardId]).map((event){
+           ''', parameters: [boardId]).asyncMap((event) async {
       List<Listboard> lists =
         event.map((row) => Listboard.fromRow(row)).toList();
 
       //then we set the cards for each listboard
       for (Listboard list in lists) {
-        client.card.getCardsforList(list.id).then((cards){
-        list.cards = cards;});
+        List<Cardlist> cards = await client.card.getCardsforList(list.id);
+        list.cards = cards;
       }
 
       return lists;
@@ -519,11 +519,13 @@ class _WorkspaceRepository extends _Repository {
     //First we get the workspaces
     return client.getDBExecutor().watch('''
           SELECT * FROM workspace WHERE userId = ?
-           ''', parameters: [userId]).map((event){
+           ''', parameters: [userId]).asyncMap((event) async {
       List<Workspace> workspaces = event.map((row) => Workspace.fromRow(row)).toList();
+
       //Then we get the members for each workspace
       for (Workspace workspace in workspaces) {
-        client.member.getMembersByWorkspace(workspaceId: workspace.id).then((members) => workspace.members = members);
+        List<Member> members = await client.member.getMembersByWorkspace(workspaceId: workspace.id);
+        workspace.members = members;
       }
       return workspaces;
     });

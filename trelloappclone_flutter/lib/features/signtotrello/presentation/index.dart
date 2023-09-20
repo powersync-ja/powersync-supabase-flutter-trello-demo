@@ -29,8 +29,8 @@ class _SignToTrelloState extends State<SignToTrello> with Service {
     return Scaffold(
       appBar: AppBar(
         title: Text((args.type == Sign.signUp)
-            ? "Sign up - Log in with Atlassian account"
-            : " Log in to continue -  Log in with Atlassian account "),
+            ? "Sign up"
+            : " Log in to continue"),
         centerTitle: false,
       ),
       body: SingleChildScrollView(
@@ -126,70 +126,49 @@ class _SignToTrelloState extends State<SignToTrello> with Service {
                     child: Text(
                         (args.type == Sign.signUp) ? "Sign up" : "Log in")),
               ),
-              ListTile(
-                onTap: () {},
-                leading: Icon(
-                  MdiIcons.google,
-                  color: brandColor,
-                ),
-                title: const Text(
-                  "CONTINUE WITH GOOGLE",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              ListTile(
-                onTap: () {},
-                leading: Icon(
-                  MdiIcons.microsoft,
-                  color: brandColor,
-                ),
-                title: const Text(
-                  "CONTINUE WITH MICROSOFT",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              ListTile(
-                onTap: () {},
-                leading: Icon(
-                  MdiIcons.apple,
-                  color: brandColor,
-                ),
-                title: const Text(
-                  "CONTINUE WITH APPLE",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {},
-                child: Text(
-                  (args.type == Sign.signUp)
-                      ? "Already have an Atlassian account? Log in"
-                      : "Can't log in? Create an account",
-                  style: const TextStyle(
-                      decoration: TextDecoration.underline, color: brandColor),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(right: 20.0, left: 20.0, bottom: 20.0),
-        child: SizedBox(
-          height: 100,
-          child: Column(
-            children: [
-              const Divider(
-                height: 1.0,
-                thickness: 1.0,
-                color: brandColor,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0, top: 18.0),
-                child: Text((args.type == Sign.signUp)
-                    ? "This page is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply"
-                    : "Privacy Policy . User Notice"),
-              )
+              // ListTile(
+              //   onTap: () {},
+              //   leading: Icon(
+              //     MdiIcons.google,
+              //     color: brandColor,
+              //   ),
+              //   title: const Text(
+              //     "CONTINUE WITH GOOGLE",
+              //     style: TextStyle(fontWeight: FontWeight.bold),
+              //   ),
+              // ),
+              // ListTile(
+              //   onTap: () {},
+              //   leading: Icon(
+              //     MdiIcons.microsoft,
+              //     color: brandColor,
+              //   ),
+              //   title: const Text(
+              //     "CONTINUE WITH MICROSOFT",
+              //     style: TextStyle(fontWeight: FontWeight.bold),
+              //   ),
+              // ),
+              // ListTile(
+              //   onTap: () {},
+              //   leading: Icon(
+              //     MdiIcons.apple,
+              //     color: brandColor,
+              //   ),
+              //   title: const Text(
+              //     "CONTINUE WITH APPLE",
+              //     style: TextStyle(fontWeight: FontWeight.bold),
+              //   ),
+              // ),
+              // GestureDetector(
+              //   onTap: () {},
+              //   child: Text(
+              //     (args.type == Sign.signUp)
+              //         ? "Already have an Atlassian account? Log in"
+              //         : "Can't log in? Create an account",
+              //     style: const TextStyle(
+              //         decoration: TextDecoration.underline, color: brandColor),
+              //   ),
+              // )
             ],
           ),
         ),

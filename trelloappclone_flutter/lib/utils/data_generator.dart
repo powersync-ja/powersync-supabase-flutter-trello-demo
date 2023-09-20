@@ -1,7 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:random_name_generator/random_name_generator.dart';
+import 'package:status_alert/status_alert.dart';
+import 'package:trelloappclone_flutter/utils/color.dart';
 import 'package:trelloappclone_flutter/utils/config.dart';
 import 'package:trelloappclone_flutter/utils/service.dart';
 import 'package:trelloappclone_flutter/utils/trello_provider.dart';
@@ -34,6 +37,13 @@ class DataGenerator with Service {
   }
 
   createSampleWorkspace(String workspaceName, TrelloProvider trello, BuildContext context) async {
+    StatusAlert.show(context,
+        duration: const Duration(seconds: 5),
+        title: 'Syncing Workspaces...',
+        configuration:
+        const IconConfiguration(icon: Icons.sync, color: brandColor),
+        maxWidth: 260);
+
     Workspace workspace = await createWorkspace(context, name: workspaceName, description: 'Example workspace', visibility: 'Public');
     for (String boardName in _generateBoardNames(workspaceName)) {
       //create board
