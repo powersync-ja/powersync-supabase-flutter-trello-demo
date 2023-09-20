@@ -200,13 +200,28 @@ When you run the app, after logging in, you will start without any workspaces or
 
 ## App Architecture Overview
 
+The project consists of two components, the **App** (`trelloappclone_flutter`) and the **Data Client** (`trelloappclone_powersync_client`).
 
+### The Data Client
+The **Data Client** is a separate Dart library, and it contains:
 
-1. overview of layers (app, client lib)
-1. end-to-end discussion of how an entity is created, updated, watched, deleted
-1. discussion of watch query example
-1. discussion of transaction example?
-1. discussion on IDs?
+* The data models (in `trelloappclone_powersync_client/lib/models`)
+* A Powersync client that makes use of the Powersync SDK and adds a few convenience methods for the app use cases (`trelloappclone_powersync_client/lib/protocol/powersync.dart`)
+* A `DataClient` API that can be used with from the app code, and provides the higher level data API. (`trelloappclone_powersync_client/lib/protocol/data_client.dart`)
+
+Two important files to point out as well are:
+
+* `trelloappclone_powersync_client/lib/schema.dart` defines the sqlite schema to use for the local synced datastore, and this maps to the model classes.
+* `trelloappclone_powersync_client/lib/app_config.dart` contains the tokens and urls needed to connect to Powersync and Supabase.
+
+### End-to-end Data Flow
+TODO: end-to-end discussion of how an entity is created, updated, watched, deleted
+
+### Listening to updated data
+TODO: discussion of watch query example
+
+### Transacions 
+TODO: discussion of transaction example?
 
 ### Changes from original Trello clone app
 
@@ -215,7 +230,7 @@ The app code was forked from the [Serverpod + Flutter Tutorial](https://github.c
 - Updated data model so that all `id` fields are Strings, and using UUIDs (it was auto-increment integer fields in the original app)
 - Updated data model so that all entities refers to the `workspaceId` of workspace in which it was created (this facilitates the sync rules)
 
-## Next Steps
+## Next 
 
 Below is a list of things that we can consider to do to enhance the functionality and experience of this app.
 
