@@ -62,7 +62,10 @@ void main() async {
   WidgetsFlutterBinding
       .ensureInitialized(); //required to get sqlite filepath from path_provider before UI has initialized
   await client.initialize();
-
+  if (client.isLoggedIn()){
+    TrelloUser? user = await client.getLoggedInUser();
+    trello.setUser(user!);
+  }
   runApp(ChangeNotifierProvider(
       create: (context) => TrelloProvider(), child: const MyApp()));
 }
@@ -79,7 +82,7 @@ class MyApp extends StatelessWidget {
               fontFamily: GoogleFonts.poppins().fontFamily,
             ),
       ),
-      initialRoute: '/',
+      initialRoute: client.isLoggedIn() ? '/home' : '/',
       routes: {
         '/': (context) => const Landing(),
         '/home': (context) => const Home(),

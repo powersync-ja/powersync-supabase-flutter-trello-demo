@@ -28,7 +28,7 @@ mixin Service {
       if (context.mounted) {
         Navigator.pushNamed(context, '/');
         StatusAlert.show(context,
-            duration: const Duration(seconds: 5),
+            duration: const Duration(seconds: 3),
             title: 'Account Created',
             subtitle: 'Log in with your new credentials',
             subtitleOptions: StatusAlertTextConfiguration(
@@ -59,7 +59,14 @@ mixin Service {
 
       if (context.mounted) {
         Navigator.pushNamed(context, '/home');
+        StatusAlert.show(context,
+            duration: const Duration(seconds: 5),
+            title: 'Syncing Workspaces...',
+            configuration:
+            const IconConfiguration(icon: Icons.sync, color: brandColor),
+            maxWidth: 260);
       }
+
     } on Exception catch (e) {
       log('Error with login: $e', error: e);
       StatusAlert.show(context,

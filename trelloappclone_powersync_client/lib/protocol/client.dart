@@ -616,10 +616,21 @@ class Client {
     return _powerSyncClient.getDBExecutor();
   }
 
+  bool isLoggedIn() {
+    return _powerSyncClient.isLoggedIn();
+  }
+
   String? getUserId() {
     return _powerSyncClient.getUserId();
   }
-  
+
+  Future<TrelloUser?> getLoggedInUser() async {
+    String? userId = _powerSyncClient.getUserId();
+    if (userId != null) {
+      return user.getUserById(userId: userId);
+    } else return null;
+  }
+
   Future<void> logOut() async {
     await _powerSyncClient.logout();
   }

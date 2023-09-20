@@ -1,6 +1,7 @@
 import 'package:empty_widget/empty_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:trelloappclone_flutter/main.dart';
 import 'package:trelloappclone_powersync_client/trelloappclone_powersync_client.dart';
 import 'package:trelloappclone_flutter/features/board/domain/board_arguments.dart';
 import 'package:trelloappclone_flutter/features/board/presentation/index.dart';
@@ -19,6 +20,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with Service {
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -146,6 +146,7 @@ This tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/
 
 # TODOs
 
+### Must DOs
 - [X] Basic Powersync and Supabase setup
 - [X] Create Supabase tables
 - [X] Port Serverpod client code to Powersync client code
@@ -159,17 +160,22 @@ This tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/
 - [X] Test if permissions are enforced by Powersync
 - [X] Look at using watch queries (for when other users update data)
 - [X] BUG: look at listboard loading for new boards? (not seeing new empty lists..)
-- [ ] Data generation functionality for testing bigger datasets
-- [ ] Look at using transactions??
+- [X] Data generation functionality for testing bigger datasets
+- [X] Show message/spinner while syncing after login - check sync status (lastSyncedAt)
+- [X] remember logged-in state (Supabase side remember auth session, but app not...)
+- [ ] remove/hide/disable unused things (alternative logins, offline boards, my cards, members buttons)
+- [ ] Look at using transactions (if time, else in next round))
 - [ ] README/Tutorial writing & cleanup
-- [ ] Fix existing app bugs? (see list in next section)
-- [ ] (nice2have) seems Comments are broken in the app - look at making this work properly
+- [ ] Clean up/disable non-working buttons and stuff
+
+### Nice to haves?
+- 
 - [ ] (nice2have) get attachment uploads working with supabase
 - [ ] (nice2have) make members functionality in app useful (currently only adding the owner as member to a workspace)
 - [ ] (nice2have) implement email confirmation flow
 - [ ] (nice2have) improve logging
 
-## Bugs in app
+### Bugs in app
 
 Pre-existing bugs in the trello clone app.
 Do we fix this or not?
