@@ -596,7 +596,6 @@ class DataClient {
 
   late PowerSyncClient _powerSyncClient;
 
-  //TODO: refine appconfig handling
   DataClient() {
     activity = _ActivityRepository(this);
     attachment = _AttachmentRepository(this);

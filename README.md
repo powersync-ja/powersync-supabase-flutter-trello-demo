@@ -214,13 +214,60 @@ Two important files to point out as well are:
 * `trelloappclone_powersync_client/lib/schema.dart` defines the sqlite schema to use for the local synced datastore, and this maps to the model classes.
 * `trelloappclone_powersync_client/lib/app_config.dart` contains the tokens and urls needed to connect to Powersync and Supabase.
 
-### End-to-end Data Flow
-TODO: end-to-end discussion of how an entity is created, updated, watched, deleted
 
 ### Listening to updated data
-TODO: discussion of watch query example
 
-### Transacions 
+The Powersync SDK makes use of `watch` queries to listen for changes to synced data. When the SDK syncs updated data from the server, and it matches the query, it will send an event out, allowing e.g. an app view (via `StreamBuilder`) or some other state management class to respond.
+
+As an example look at `trelloappclone_flutter/lib/utils/service.dart`:
+
+```dart
+  Stream<List<Workspace>> getWorkspacesStream() {
+    return dataClient.workspace.watchWorkspacesByUser(userId: trello.user.id).map((workspaces) {
+      trello.setWorkspaces(workspaces);
+      return workspaces;
+    });
+  }
+```
+
+This in turn makes use of the `_WorkspaceRepository` class:
+```dart
+  Stream<List<Workspace>> watchWorkspacesByUser({required String userId}) {
+    //First we get the workspaces
+    return client.getDBExecutor().watch('''
+          SELECT * FROM workspace WHERE userId = ?
+           ''', parameters: [userId]).asyncMap((event) async {
+      List<Workspace> workspaces = event.map((row) => Workspace.fromRow(row)).toList();
+
+      //Then we get the members for each workspace
+      for (Workspace workspace in workspaces) {
+        List<Member> members = await client.member.getMembersByWorkspace(workspaceId: workspace.id);
+        workspace.members = members;
+      }
+      return workspaces;
+    });
+  }
+```
+
+Now we can simply make use of a `StreamBuilder` to have a view component that updates whenever a matching workspace is updated:
+
+```dart
+      StreamBuilder(
+          stream: getWorkspacesStream(),
+          builder:
+              (BuildContext context, AsyncSnapshot<List<Workspace>> snapshot) {
+            if (snapshot.hasData) {
+              List<Workspace> children = snapshot.data as List<Workspace>;
+
+              if (children.isNotEmpty) {
+                return SingleChildScrollView(
+                    child:
+                        Column(children: buildWorkspacesAndBoards(children)));
+              }
+            })
+```
+
+### Transactions 
 TODO: discussion of transaction example?
 
 ### Changes from original Trello clone app
