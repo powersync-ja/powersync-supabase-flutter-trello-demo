@@ -135,10 +135,29 @@ TODO: explain how it sticks together
 1. discussion of transaction example?
 1. discussion on IDs?
 
+### Changes from original Trello clone app
+
+TODO: decide if we want to discuss this in the tutorial.
+
+- Updated data model so that all `id` fields are Strings, and using UUIDs (it was auto-increment integer fields in the original app)
+- Updated data model so that all entities refers to the `workspaceId` of workspace in which it was created (this facilitates the sync rules)
+
+## Next Steps
+
+Below is a list of things that we still want to do to enhance the functionality and experience of this app.
+
+* Update Workspace + Board edit views to use actual data and update the entity
+* Fix Members functionality (at least Workspace members invite/edit) to actually work
+* Get Comments & Checklists working properly
+* Allow user to import existing workspaces/board/etc from e.g. Trello (either via API or exported json)
+* Enhancing UX of app (there are many irritating issues and things not working yet in the original app, like keeping the order of the lists in a board)
+* Update of password or email
+* Enhance state management - e.g. let `TrelloProvider` listen to streams, and notify changes, to simplify views
+* Get the attachments to actually work (using Supabase files upload/download)
+
 ## Feedback
 
 - Feel free to send feedback . Feature requests are always welcome. If there's anything you'd like to chat about, please don't hesitate to [reach out to us](https://docs.powersync.co/resources/contact-us).
-
 
 ## Acknowledgements
 
@@ -146,7 +165,7 @@ This tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/
 
 # TODOs
 
-### Must DOs
+## Must DOs
 - [X] Basic Powersync and Supabase setup
 - [X] Create Supabase tables
 - [X] Port Serverpod client code to Powersync client code
@@ -163,40 +182,10 @@ This tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/
 - [X] Data generation functionality for testing bigger datasets
 - [X] Show message/spinner while syncing after login - check sync status (lastSyncedAt)
 - [X] remember logged-in state (Supabase side remember auth session, but app not...)
-- [ ] remove/hide/disable unused things (alternative logins, offline boards, my cards, members buttons)
-- [ ] Look at using transactions (if time, else in next round))
+- [X] remove/hide/disable unused things (alternative logins, offline boards, my cards, members buttons)
+- [X] drag and drop must work
+- [ ] disable invalid login/signup options
+- [ ] test on Android
 - [ ] README/Tutorial writing & cleanup
-- [ ] Clean up/disable non-working buttons and stuff
+- [ ] Look at using transactions (if time, else in next round))
 
-### Nice to haves?
-- 
-- [ ] (nice2have) get attachment uploads working with supabase
-- [ ] (nice2have) make members functionality in app useful (currently only adding the owner as member to a workspace)
-- [ ] (nice2have) implement email confirmation flow
-- [ ] (nice2have) improve logging
-
-### Bugs in app
-
-Pre-existing bugs in the trello clone app.
-Do we fix this or not?
-
-- [ ] comments does not seem to work
-- [ ] seems actual dragging of cards to different lists does not work?
-- [ ] creation of checklist items are flaky...
-- [ ] board details screen shows static data
-- [ ] board share option cannot include "public" as an option
-
-## Possible next steps
-
-* Allow user to import existing workspaces/board/etc from e.g. Trello (either via API or exported json)
-* Email confirmation flow
-* Update of password or email
-* Enhancing UX of app (there are many irritating issues and things not working yet in the original app)
-* Enhance state management - e.g. let `TrelloProvider` listen to streams, and notify changes, to simplify views
-
-## Changes from original Trello clone app
-
-TODO: decide if we want to discuss this in the tutorial.
-
-- Updated data model so that all `id` fields are Strings, and using UUIDs (it was auto-increment integer fields in the original app)
-- Updated data model so that all entities refers to the `workspaceId` of workspace in which it was created (this facilitates the sync rules)

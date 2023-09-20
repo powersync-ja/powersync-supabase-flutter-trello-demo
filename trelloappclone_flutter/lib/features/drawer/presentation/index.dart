@@ -71,38 +71,14 @@ class _CustomDrawerState extends State<CustomDrawer> with Service {
                     thickness: 2,
                     color: brandColor,
                   ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text("Workspaces"),
-                  ),
-                  StreamBuilder(
-                    stream: getWorkspacesStream(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        List<Workspace> children =
-                            snapshot.data as List<Workspace>;
-
-                        if (children.isNotEmpty) {
-                          return Column(children: buildWorkspaces(children));
-                        }
-                      }
-                      return const SizedBox.shrink();
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.card_membership),
-                    title: const Text("My cards"),
-                    onTap: () {
-                      Navigator.pushNamed(context, '/mycards');
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.pages),
-                    title: const Text("Offline boards"),
-                    onTap: () {
-                      Navigator.pushNamed(context, '/offlineboards');
-                    },
-                  ),
+                  // TODO: Show Cards assigned to logged in user
+                  // ListTile(
+                  //   leading: const Icon(Icons.card_membership),
+                  //   title: const Text("My cards"),
+                  //   onTap: () {
+                  //     Navigator.pushNamed(context, '/mycards');
+                  //   },
+                  // ),
                   ListTile(
                     leading: const Icon(Icons.settings),
                     title: const Text("Settings"),

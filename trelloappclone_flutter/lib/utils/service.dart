@@ -59,14 +59,12 @@ mixin Service {
 
       if (context.mounted) {
         Navigator.pushNamed(context, '/home');
-        if (client.getCurrentSyncStatus().connected){
-          StatusAlert.show(context,
-              duration: const Duration(seconds: 4),
-              title: 'Syncing Workspaces...',
-              configuration:
-              const IconConfiguration(icon: Icons.sync, color: brandColor),
-              maxWidth: 260);
-        }
+        StatusAlert.show(context,
+            duration: const Duration(seconds: 4),
+            title: 'Syncing Workspaces...',
+            configuration:
+            const IconConfiguration(icon: Icons.sync, color: brandColor),
+            maxWidth: 260);
       }
 
     } on Exception catch (e) {

@@ -127,10 +127,6 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                     }
                     return const SizedBox.shrink();
                   })),
-          floatingActionButton: FloatingActionButton(
-              backgroundColor: Colors.green[400],
-              onPressed: () {},
-              child: const Icon(Icons.zoom_in)),
         ));
   }
 

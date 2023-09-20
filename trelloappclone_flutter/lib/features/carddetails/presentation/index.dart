@@ -86,13 +86,6 @@ class _CardDetailsState extends State<CardDetails> with Service {
           padding: const EdgeInsets.all(10.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.picture_in_picture_sharp),
-                  label: const Text("Cover")),
-            ),
             Text(
               args.crd.name,
               style: const TextStyle(fontSize: 20),
@@ -140,33 +133,12 @@ class _CardDetailsState extends State<CardDetails> with Service {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.4,
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        uploadFile(args.crd);
-                      },
+                      onPressed: null,
                       label: const Text("Add Attachment"),
                       icon: const CircleAvatar(
                         backgroundColor: brandColor,
                         radius: 15,
                         child: Icon(Icons.attachment),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.4,
-                    child: ElevatedButton.icon(
-                      onPressed: () {},
-                      label: const Text("Members"),
-                      icon: const CircleAvatar(
-                        backgroundColor: brandColor,
-                        radius: 15,
-                        child: Icon(Icons.person),
                       ),
                     ),
                   )
@@ -246,25 +218,26 @@ class _CardDetailsState extends State<CardDetails> with Service {
           ]),
         ),
       ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.only(bottom: 5.0),
-        color: whiteShade,
-        width: MediaQuery.of(context).size.width * 0.8,
-        height: 80,
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          const CircleAvatar(),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.7,
-            child: TextField(
-              decoration: InputDecoration(
-                  hintText: "Add comment",
-                  suffix: IconButton(
-                      onPressed: () {}, icon: const Icon(Icons.send))),
-            ),
-          ),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.attachment))
-        ]),
-      ),
+      //TODO: Add this back in when we get comments working properly
+      // bottomNavigationBar: Container(
+      //   padding: const EdgeInsets.only(bottom: 5.0),
+      //   color: whiteShade,
+      //   width: MediaQuery.of(context).size.width * 0.8,
+      //   height: 80,
+      //   child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+      //     const CircleAvatar(),
+      //     SizedBox(
+      //       width: MediaQuery.of(context).size.width * 0.7,
+      //       child: TextField(
+      //         decoration: InputDecoration(
+      //             hintText: "Add comment",
+      //             suffix: IconButton(
+      //                 onPressed: () {}, icon: const Icon(Icons.send))),
+      //       ),
+      //     ),
+      //     IconButton(onPressed: () {}, icon: const Icon(Icons.attachment))
+      //   ]),
+      // ),
     );
   }
 
