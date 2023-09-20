@@ -6,6 +6,7 @@ import "../models/models.dart";
 import 'powersync.dart';
 
 export "../models/models.dart";
+export "package:powersync/src/sync_status.dart";
 
 class _Repository {
   Client client;
@@ -652,4 +653,13 @@ class Client {
     }
     return _powerSyncClient.signupWithEmail(name, email, password);
   }
+
+  SyncStatus getCurrentSyncStatus() {
+    return _powerSyncClient.currentStatus;
+  }
+
+  Stream<SyncStatus> getStatusStream() {
+    return _powerSyncClient.statusStream;
+  }
+
 }

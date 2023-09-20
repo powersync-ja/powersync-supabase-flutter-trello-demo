@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:empty_widget/empty_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
@@ -20,15 +22,41 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with Service {
+  late SyncStatus _connectionState;
+  StreamSubscription<SyncStatus>? _syncStatusSubscription;
 
   @override
   void initState() {
     super.initState();
 
+    _connectionState = client.getCurrentSyncStatus();
+    _syncStatusSubscription = client.getStatusStream().listen((event) {
+      setState(() {
+        _connectionState = client.getCurrentSyncStatus();
+      });
+    });
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _syncStatusSubscription?.cancel();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
+    const connectedIcon = IconButton(
+      icon: Icon(Icons.wifi),
+      tooltip: 'Connected',
+      onPressed: null,
+    );
+    const disconnectedIcon = IconButton(
+      icon: Icon(Icons.wifi_off),
+      tooltip: 'Not connected',
+      onPressed: null,
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Boards"),
@@ -38,11 +66,7 @@ class _HomeState extends State<Home> with Service {
                 search(context);
               },
               icon: const Icon(Icons.search)),
-          IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/notifications');
-              },
-              icon: const Icon(Icons.notifications_none_outlined))
+          _connectionState.connected ? connectedIcon : disconnectedIcon
         ],
       ),
       drawer: const CustomDrawer(),

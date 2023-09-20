@@ -211,4 +211,8 @@ class PowerSyncClient {
     await _db.disconnectedAndClear();
   }
 
+  /// Getting current connection status
+  SyncStatus get currentStatus => _db.currentStatus;
+  Stream<SyncStatus> get statusStream => _db.statusStream;
+
 }
