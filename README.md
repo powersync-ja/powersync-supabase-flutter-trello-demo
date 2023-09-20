@@ -267,9 +267,6 @@ Now we can simply make use of a `StreamBuilder` to have a view component that up
             })
 ```
 
-### Transactions 
-TODO: discussion of transaction example?
-
 ### Changes from original Trello clone app
 
 The app code was forked from the [Serverpod + Flutter Tutorial](https://github.com/Mobterest/serverpod_flutter_tutorial) code. It was changed in the following ways to facilitate the Powersync integration:
@@ -279,13 +276,12 @@ The app code was forked from the [Serverpod + Flutter Tutorial](https://github.c
 
 ## Next 
 
-Below is a list of things that we can consider to do to enhance the functionality and experience of this app.
+Below is a list of things that can be implemented to enhance the functionality and experience of this app.
 
 * Fix Lists in a board to keep its order, and Cards in a list to keep its ranking
 * Update Workspace + Board edit views to use actual data and update the entity
 * Fix Members functionality (at least Workspace members invite/edit) to actually work
 * Get Comments & Checklists working properly
-* Allow user to import existing workspaces/board/etc from e.g. Trello (either via API or exported json)
 * Enhancing UX of app (there are many irritating issues and things not working yet in the original app)
 * Update of password or email
 * Enhance state management - e.g. let `TrelloProvider` listen to streams, and notify changes, to simplify views
@@ -298,31 +294,3 @@ Below is a list of things that we can consider to do to enhance the functionalit
 ## Acknowledgements
 
 This tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/Mobterest/serverpod_flutter_tutorial) by [Mobterest](https://www.instagram.com/mobterest/
-
-# TODOs
-
-## Must DOs
-- [X] Basic Powersync and Supabase setup
-- [X] Create Supabase tables
-- [X] Port Serverpod client code to Powersync client code
-- [X] Update App code to user powersync client code
-- [X] Test if it works with local db (sqlite)
-- [X] Update to use Supabase Auth
-- [X] implement basic global sync rules
-- [X] Test if global syncing works
-- [X] Tweak datamodel to allow per workspace lookups: add workspaceId reference to various entities (update on supabase, etc)
-- [X] Tweak sync rules to enforce permissions (according to workspace owner, visibility, and members)
-- [X] Test if permissions are enforced by Powersync
-- [X] Look at using watch queries (for when other users update data)
-- [X] BUG: look at listboard loading for new boards? (not seeing new empty lists..)
-- [X] Data generation functionality for testing bigger datasets
-- [X] Show message/spinner while syncing after login - check sync status (lastSyncedAt)
-- [X] remember logged-in state (Supabase side remember auth session, but app not...)
-- [X] remove/hide/disable unused things (alternative logins, offline boards, my cards, members buttons)
-- [X] drag and drop must work
-- [X] disable invalid login/signup options
-- [X] BUG: cards loaded inconsistently for boards
-- [X] test on Android
-- [ ] README/Tutorial writing & cleanup
-- [ ] Look at using transactions (if time, else in next round))
-
