@@ -22,8 +22,8 @@ mixin Service {
   //sign up new user
   signUp({required String name, required String email, required String password, required BuildContext context}) async {
     try {
-      TrelloUser user = await client.signupWithEmail(name, email, password);
-      await client.user.createUser(user);
+      TrelloUser user = await dataClient.signupWithEmail(name, email, password);
+      await dataClient.user.createUser(user);
 
       if (context.mounted) {
         Navigator.pushNamed(context, '/');
@@ -54,7 +54,7 @@ mixin Service {
   //log in existing user
   logIn(String email, String password, BuildContext context) async {
     try {
-      TrelloUser user = await client.loginWithEmail(email, password);
+      TrelloUser user = await dataClient.loginWithEmail(email, password);
       trello.setUser(user);
 
       if (context.mounted) {
@@ -84,7 +84,7 @@ mixin Service {
   //log out user
   logOut(BuildContext context) async {
     try {
-      await client.logOut();
+      await dataClient.logOut();
     } on Exception catch (e) {
       StatusAlert.show(context,
           duration: const Duration(seconds: 5),
@@ -100,7 +100,7 @@ mixin Service {
 
   //search for a board
   search(BuildContext context) async {
-    List<Board> allboards = await client.board.getAllBoards();
+    List<Board> allboards = await dataClient.board.getAllBoards();
 
     if (context.mounted) {
       showSearch(context: context, delegate: CustomSearchDelegate(allboards));
@@ -128,7 +128,7 @@ mixin Service {
 
     try {
       Workspace addedWorkspace =
-          await client.workspace.createWorkspace(workspace);
+          await dataClient.workspace.createWorkspace(workspace);
 
       Member newMember = Member(
           id: randomUuid(),
@@ -137,7 +137,7 @@ mixin Service {
           name: trello.user.name ?? trello.user.email,
           role: "Admin");
 
-      await client.member.addMember(newMember);
+      await dataClient.member.addMember(newMember);
 
       if (context.mounted) {
         Navigator.pushNamed(context, "/home");
@@ -158,14 +158,14 @@ mixin Service {
   //get workspaces of a specific user using user ID
   Future<List<Workspace>> getWorkspaces() async {
     List<Workspace> workspaces =
-        await client.workspace.getWorkspacesByUser(userId: trello.user.id);
+        await dataClient.workspace.getWorkspacesByUser(userId: trello.user.id);
     trello.setWorkspaces(workspaces);
     return workspaces;
   }
 
   //get a stream of workspaces for user, so we can react on distributed changes to it
   Stream<List<Workspace>> getWorkspacesStream() {
-    return client.workspace.watchWorkspacesByUser(userId: trello.user.id).map((workspaces) {
+    return dataClient.workspace.watchWorkspacesByUser(userId: trello.user.id).map((workspaces) {
       trello.setWorkspaces(workspaces);
       return workspaces;
     });
@@ -174,7 +174,7 @@ mixin Service {
   //create board
   createBoard(BuildContext context, Board brd) async {
     try {
-      await client.board.createBoard(brd);
+      await dataClient.board.createBoard(brd);
       if (context.mounted) {
         Navigator.pushNamed(context, "/home");
       }
@@ -192,14 +192,14 @@ mixin Service {
   //get boards of a specific workspace by Workspace ID
   Future<List<Board>> getBoards(String workspaceId) async {
     List<Board> boards =
-        await client.workspace.getBoardsByWorkspace(workspaceId: workspaceId);
+        await dataClient.workspace.getBoardsByWorkspace(workspaceId: workspaceId);
     trello.setBoards(boards);
     return boards;
   }
 
   //watch boards of a specific workspace by Workspace ID via a stream
   Stream<List<Board>> getBoardsStream(String workspaceId) {
-    return client.workspace.watchBoardsByWorkspace(workspaceId: workspaceId).map((boards) {
+    return dataClient.workspace.watchBoardsByWorkspace(workspaceId: workspaceId).map((boards) {
       trello.setBoards(boards);
       return boards;
     });
@@ -207,44 +207,44 @@ mixin Service {
 
   //update workspace
   Future<bool> updateWorkspace(Workspace wkspc) async {
-    return await client.workspace.updateWorkspace(wkspc);
+    return await dataClient.workspace.updateWorkspace(wkspc);
   }
 
   //get user by Id
   Future<TrelloUser?> getUserById(String userId) async {
-    TrelloUser? user = await client.user.getUserById(userId: userId);
+    TrelloUser? user = await dataClient.user.getUserById(userId: userId);
     return user;
   }
 
   //get information of members
   Future<List<TrelloUser>> getMembersInformation(List<Member> mmbrs) async {
-    List<TrelloUser> usrs = await client.member.getInformationOfMembers(mmbrs);
+    List<TrelloUser> usrs = await dataClient.member.getInformationOfMembers(mmbrs);
     return usrs;
   }
 
   //remove Member from Workspace
   Future<Workspace> removeMemberFromWorkspace(
       Member mmbr, Workspace wkspc) async {
-    Workspace updatedWorkspace = await client.member.deleteMember(mmbr, wkspc);
+    Workspace updatedWorkspace = await dataClient.member.deleteMember(mmbr, wkspc);
     return updatedWorkspace;
   }
 
   //update offline status
   Future<bool> updateOfflineStatus(Board brd) async {
-    return await client.board.updateBoard(brd);
+    return await dataClient.board.updateBoard(brd);
   }
 
   //get lists by board
   Future<List<Listboard>> getListsByBoard(Board brd) async {
     List<Listboard> brdlist =
-        await client.listboard.getListsByBoard(boardId: brd.id);
+        await dataClient.listboard.getListsByBoard(boardId: brd.id);
     trello.setListBoard(brdlist);
     return brdlist;
   }
 
   //watch lists by board via Stream
   Stream<List<Listboard>> getListsByBoardStream(Board brd) {
-    return client.listboard.watchListsByBoard(boardId: brd.id).map((lists) {
+    return dataClient.listboard.watchListsByBoard(boardId: brd.id).map((lists) {
       trello.setListBoard(lists);
       return lists;
     });
@@ -252,7 +252,7 @@ mixin Service {
 
   //add list
   Future<void> addList(Listboard lst) async {
-    await client.listboard.createList(lst);
+    await dataClient.listboard.createList(lst);
     createActivity(
         workspaceId: lst.workspaceId,
         description: "${trello.user.name} added a new list ${lst.name}");
@@ -260,7 +260,7 @@ mixin Service {
 
   //add card
   Future<void> addCard(Cardlist crd) async {
-    Cardlist newcrd = await client.card.createCard(crd);
+    Cardlist newcrd = await dataClient.card.createCard(crd);
     createActivity(
         card: newcrd.id,
         workspaceId: newcrd.workspaceId,
@@ -269,7 +269,7 @@ mixin Service {
 
   //update card
   Future<void> updateCard(Cardlist crd) async {
-    await client.card.updateCard(crd);
+    await dataClient.card.updateCard(crd);
 
     createActivity(
         card: crd.id,
@@ -280,7 +280,7 @@ mixin Service {
   //create activity
   Future<void> createActivity(
       {required String workspaceId, String? boardId, required String description, String? card}) async {
-    await client.activity.createActivity(Activity(
+    await dataClient.activity.createActivity(Activity(
         id: randomUuid(),
         workspaceId: workspaceId,
         boardId: boardId,
@@ -292,30 +292,30 @@ mixin Service {
 
   //get activities of a specific card
   Future<List<Activity>> getActivities(Cardlist crd) async {
-    return client.activity.getActivities(crd);
+    return dataClient.activity.getActivities(crd);
   }
 
   //create comment
   Future<void> createComment(Comment cmmt) async {
-    await client.comment.createComment(cmmt);
+    await dataClient.comment.createComment(cmmt);
   }
 
   //create checklist
   Future<void> createChecklist(Checklist chcklst) async {
-    await client.checklist.createChecklist(chcklst);
+    await dataClient.checklist.createChecklist(chcklst);
   }
 
   Future<List<Checklist>> getChecklists(Cardlist crd) async {
-    List<Checklist> chcklsts = await client.checklist.getChecklists(crd);
+    List<Checklist> chcklsts = await dataClient.checklist.getChecklists(crd);
     return chcklsts;
   }
 
   Future<void> updateChecklist(Checklist chcklst) async {
-    await client.checklist.updateChecklist(chcklst);
+    await dataClient.checklist.updateChecklist(chcklst);
   }
 
   Future<void> deleteChecklist(Cardlist crd) async {
-    await client.checklist.deleteChecklist(crd);
+    await dataClient.checklist.deleteChecklist(crd);
   }
 
   Future<void> uploadFile(Cardlist crd) async {
@@ -343,7 +343,7 @@ mixin Service {
   }
 
   Future<void> insertAttachment(Cardlist crd, String path) async {
-    await client.attachment.addAttachment(Attachment(
+    await dataClient.attachment.addAttachment(Attachment(
         id: randomUuid(),
         workspaceId: crd.workspaceId,
         userId: trello.user.id,

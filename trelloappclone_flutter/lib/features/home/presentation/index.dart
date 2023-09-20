@@ -29,10 +29,10 @@ class _HomeState extends State<Home> with Service {
   void initState() {
     super.initState();
 
-    _connectionState = client.getCurrentSyncStatus();
-    _syncStatusSubscription = client.getStatusStream().listen((event) {
+    _connectionState = dataClient.getCurrentSyncStatus();
+    _syncStatusSubscription = dataClient.getStatusStream().listen((event) {
       setState(() {
-        _connectionState = client.getCurrentSyncStatus();
+        _connectionState = dataClient.getCurrentSyncStatus();
       });
     });
   }

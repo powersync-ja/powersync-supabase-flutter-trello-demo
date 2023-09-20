@@ -9,7 +9,7 @@ export "../models/models.dart";
 export "package:powersync/src/sync_status.dart";
 
 class _Repository {
-  Client client;
+  DataClient client;
 
   _Repository(this.client);
 
@@ -22,7 +22,7 @@ class _Repository {
 }
 
 class _ActivityRepository extends _Repository {
-  _ActivityRepository(Client client) : super(client);
+  _ActivityRepository(DataClient client) : super(client);
 
   Future<bool> createActivity(Activity activity) async {
     final results = await client.getDBExecutor().execute('''INSERT INTO
@@ -48,7 +48,7 @@ class _ActivityRepository extends _Repository {
 }
 
 class _AttachmentRepository extends _Repository {
-  _AttachmentRepository(Client client) : super(client);
+  _AttachmentRepository(DataClient client) : super(client);
 
   Future<Attachment> addAttachment(Attachment attachment) async {
     final results = await client.getDBExecutor().execute('''INSERT INTO
@@ -76,7 +76,7 @@ class _AttachmentRepository extends _Repository {
 }
 
 class _BoardRepository extends _Repository {
-  _BoardRepository(Client client) : super(client);
+  _BoardRepository(DataClient client) : super(client);
 
   String get insertQuery => '''
   INSERT INTO
@@ -166,7 +166,7 @@ class _BoardRepository extends _Repository {
 }
 
 class _CardlistRepository extends _Repository {
-  _CardlistRepository(Client client) : super(client);
+  _CardlistRepository(DataClient client) : super(client);
 
   String get insertQuery => '''
   INSERT INTO
@@ -229,7 +229,7 @@ class _CardlistRepository extends _Repository {
 }
 
 class _CheckListRepository extends _Repository {
-  _CheckListRepository(Client client) : super(client);
+  _CheckListRepository(DataClient client) : super(client);
 
   String get insertQuery => '''
   INSERT INTO
@@ -295,7 +295,7 @@ class _CheckListRepository extends _Repository {
 }
 
 class _CommentRepository extends _Repository {
-  _CommentRepository(Client client) : super(client);
+  _CommentRepository(DataClient client) : super(client);
 
   String get insertQuery => '''
   INSERT INTO
@@ -328,7 +328,7 @@ class _CommentRepository extends _Repository {
 }
 
 class _ListboardRepository extends _Repository {
-  _ListboardRepository(Client client) : super(client);
+  _ListboardRepository(DataClient client) : super(client);
 
   Future<List<Listboard>> getListsByBoard({required String boardId}) async {
     //first we get the listboards
@@ -384,7 +384,7 @@ class _ListboardRepository extends _Repository {
 }
 
 class _MemberRepository extends _Repository {
-  _MemberRepository(Client client) : super(client);
+  _MemberRepository(DataClient client) : super(client);
 
   String get insertQuery => '''
   INSERT INTO
@@ -442,7 +442,7 @@ class _MemberRepository extends _Repository {
 }
 
 class _UserRepository extends _Repository {
-  _UserRepository(Client client) : super(client);
+  _UserRepository(DataClient client) : super(client);
 
   String get insertQuery => '''
   INSERT INTO
@@ -477,7 +477,7 @@ class _UserRepository extends _Repository {
 }
 
 class _WorkspaceRepository extends _Repository {
-  _WorkspaceRepository(Client client) : super(client);
+  _WorkspaceRepository(DataClient client) : super(client);
 
   String get insertQuery => '''
   INSERT INTO
@@ -582,7 +582,7 @@ class _WorkspaceRepository extends _Repository {
   }
 }
 
-class Client {
+class DataClient {
   late final _ActivityRepository activity;
   late final _AttachmentRepository attachment;
   late final _BoardRepository board;
@@ -597,7 +597,7 @@ class Client {
   late PowerSyncClient _powerSyncClient;
 
   //TODO: refine appconfig handling
-  Client() {
+  DataClient() {
     activity = _ActivityRepository(this);
     attachment = _AttachmentRepository(this);
     board = _BoardRepository(this);

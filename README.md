@@ -2,67 +2,132 @@
 
 ## Introduction
 
-Trello App Clone built with [Flutter](https://flutter.dev/) :star2: [Powersync](https://powersync.co/) and [Supabase](https://supabase.io/)
+Trello App Clone built with [Flutter](https://flutter.dev/), [Powersync](https://powersync.co/) and [Supabase](https://supabase.io/)
 
-![Banner of the images](showcase.png)
+<img src="showcase.png" alt="drawing" width="360"/>
 
-- `trelloappclone_powersync_client` is a library that defines the domain model and integrates with Powersync and Supabase
+The project consists of two components:
+
+- `trelloappclone_powersync_client` is a dart library that defines the domain model and integrates with Powersync and Supabase
 - `trelloappclone_flutter` contains the Trello clone Flutter app
 
 ## Getting Started
 
-First checkout out [the getting started guide](https://docs.powersync.co/integration-guides/supabase-+-powersync) for [Powersync](https://powersync.co/) and [Supabase](https://supabase.io/).
+First check out [the getting started guide](https://docs.powersync.co/integration-guides/supabase-+-powersync) for [Powersync](https://powersync.co/) and [Supabase](https://supabase.io/).
 
-TODO: describe below steps from basic tut.
-- [ ] Create Powersync & Supabase accounts
+Before you proceed, this guide assumes that you have already signed up for free accounts with both Supabase and PowerSync. If you haven't signed up for a **PowerSync account** yet, [click here](https://accounts.journeyapps.com/portal/free-trial?powersync=true) (and if you haven't signed up for **Supabase** yet, [click here](https://supabase.com/dashboard/sign-up)). This guide also assumes that you already have Flutter set up.
 
-## Configuring Supabase
-TODO: describe below steps from basic tut.
-- [ ] Setup Supabase project
+Next up we will follow these steps:
+
+1. Configure Supabase:
+* Create the demo database schema
+* Create the Postgres publication
+2. Configure PowerSync:
+* Create connection to Supabase
+* Configure Global Sync Rules
+3. Configure the Trello Clone App
+4. Run the app and test
+5. Configure improved Sync Rules
+6. Run the app and test
+
+## Configure Supabase
+
+- [ ] Create a new Supabase project (or use an existing project if you prefer) and follow the below steps.
+
+- [ ] For ease of use of the Flutter demo app, you can **disable email confirmation** in your Supabase Auth settings. In your Supabase project, go to _"Authentication"_ --> _"Providers"_ -> _"Email"_ and then disable _"Confirm email"_. If you keep email confirmation enabled, the Supabase user confirmation email will reference the default Supabase Site URL ofhttp://localhost:3000 — you can ignore this.
 
 ### Creating Database Tables
-After creating the Supabase project, we still need to create the tables in the database. 
+After creating the Supabase project, we still need to create the tables in the database. For this application we need the following tables:
 
-TODO: use `tables.sql` and explain how to run this in Supabase SQL editor
- 
-- [ ] Create tables in Supabase (using generated sql files)
-- [ ] set email confirmation flow to false
+* `activity`
+* `attachment`
+* `board`
+* `card`
+* `checklist`
+* `comment`
+* `listboard`
+* `member`
+* `models`
+* `trellouser`
+* `workspace`
+
+_(We give a brief overview of the app domain later in this README.)_
+
+- [ ] Open the `tables.pgsql` file, and copy the contents. 
+- [ ] Paste this into the *Supabase SQL Editor*
+- [ ] Run the SQL statements in the editor. (If you get a warning about a "potentially destructive operation", that's a false positive that you can safely ignore.)
 
 ### Create the Postgres Publication
 
-PowerSync uses the Postgres [Write Ahead Log (WAL)](https://www.postgresql.org/docs/current/wal-intro.html) to replicate data changes in order to keep PowerSync SDK clients up to date.
+PowerSync uses the Postgres [Write Ahead Log (WAL)](https://www.postgresql.org/docs/current/wal-intro.html) to replicate data changes in order to keep PowerSync SDK clients up to date. To enable this we need to create a `publication` in Supabase.
 
-Run the below SQL statement in your Supabase SQL Editor:
+- [ ] Run the below SQL statement in your Supabase SQL Editor:
 ```sql
 create publication powersync for table activity, attachment, board, card, checklist, comment, listboard, member, trellouser, workspace;
 ```
 
 ## Configuring PowerSync
 
-TODO: create below instructions from basic tut
-- [ ] Setup Powersync project 
-- [ ] and connect to Supabase
+We need to connect PowerSync to the Supabase Postgres database:
 
-## Configuring Flutter App
-TODO: describe below steps from basic tut.
-- [ ] Configure Flutter app with powersync project settings (see basic Powersync Tut)
+- [ ] In the [PowerSync dashboard](https://powersync.journeyapps.com/) Project tree, click on _"Create new instance"_.
 
-Note that at this stage _we have NOT yet setup any sync rules_. This means that the app will not yet retain any data that you create locally. What actually happens is that the data gets synced to Supabase (you can check with the Supabase SQL editor), but since there are no valid sync rules, Powersync deletes it from the local store, thus making it look like the workspaces and boards your created, are disappearing.
+- [ ] Give your instance a name, such as _"Trello Clone"_.
+ 
+- [ ] In the _"Edit Instance"_ dialog, navigate to the _"Credentials"_ tab and enable _"Use Supabase Auth"_.
 
-## Configuring Sync Rules
-[Sync rules](https://docs.powersync.co/usage/sync-rules) are necessary so that PowerSync knows which data to sync to which client app instance.
+- [ ] Under the _"Connections"_ tab, click on the + icon.
+
+- [ ] On the subsequent screen, we'll configure the connection to Supabase. This is simplest using your Supabase database URI. In your Supabase dashboard, navigate to _"Project Settings"_ -> _"Database"_. Then, under the _"Connection String"_ section, switch to URI and copy the value.
+
+- [ ] Paste the copied value into the _"URI"_ field in PowerSync:
+
+- [ ] Enter the Password for the `postgres` user in your Supabase database. (Supabase also [refers to this password](https://supabase.com/docs/guides/database/managing-passwords) as the database password or project password)
+
+- [ ] Click _"Test Connection"_ and fix any errors:
+
+- [ ] Click "Save"
+
+PowerSync deploys and configures an isolated cloud environment for you, which will take a few minutes to complete:
+
+
+## Configuring Sync Rules - 1
+[Sync rules](https://docs.powersync.co/usage/sync-rules) allow developers to control which data gets synced to which user devices using a SQL-like syntax in a YAML file.  For the demo app, we're first going to use naive global sync rules, and then present improved rules that takes the domain permissions into account.
 
 ### Global sync rules to get things working
 
-We can be naive about it, and use a global bucket definition, that at least specify in some way which users can get data. 
+We can be naive about it, and use a global bucket definition that at least specify in some way which users can get data. 
 
-- `trelloappclone_powersync_client.dart/sync-rules-0.yaml` provides such a naive approach. 
-- Copy these sync rules to `sync-rules.yaml` under your Powersync project instance, and deploy the rules. 
-- When you now run the app, it will actually show and retain data.
-- The app code itself applies some basic filtering to only show data that belongs to the current user, or according to the visibility and membership settings of the various workspaces and boards.
+- [ ] Copy the contents of `trelloappclone_powersync_client.dart/sync-rules-0.yaml` to `sync-rules.yaml` under your Powersync project instance
+- [ ] In the top right of the editor, click _"Deploy sync rules"_. 
+- [ ] Confirm in the dialog and wait a couple of minutes for the deployment to complete. 
+
+When you now run the app (after completing the next step to configure and run the app), it will actually show and retain data. The app code itself applies some basic filtering to only show data that belongs to the current user, or according to the visibility and membership settings of the various workspaces and boards.
+
+## Configuring Flutter App
+
+We need to configure the app to use the correct Powersync and Supabase projects.
+
+- [ ] Open and edit the `trelloappclone_powersync_client.dart/lib/app_config.dart` file.
+- [ ] Replace the values for `supabaseUrl` and `supabaseAnonKey` (You can find these under _"Project Settings"_ -> _"API"_ in your Supabase dashboard — under the _"URL"_ section, and anon key under _"Project API keys"_.)
+- [ ] For the value of powersyncUrl, follow these steps:
+1. In the project tree on the PowerSync dashboard, right-click on the instance you created earlier.
+2. Click _"Edit instance"_.
+3. Click on _"Instance URL"_ to copy the value.
+ 
+
+## Build & Run the App
+
+- [ ] Run ``` flutter pub get ``` to install the necessary packages on your command line that's navigated to the root of the project.
+- [ ] Invoke the ``` flutter run ``` command, and select either an Android device/emulator or iOS device/simulator as destination (_Note: Powersync does not support flutter web apps yet._)
+
+
+## Configuring Sync Rules - 2
 
 ### Using sync rules to enforce permissions
-However, it is better that we do not sync data to the client that the logged-in user is not allowed to see. We can use Powersync sync rules to enforce permissions, so that users can only see and edit data that they are allowed to see and edit.
+We have syncing working, but the sync rules are not enforcing the access rules from the domain in any way.
+
+It is better that we do not sync data to the client that the logged-in user is not allowed to see. We can use Powersync sync rules to enforce permissions, so that users can only see and edit data that they are allowed to see and edit.
 
 First, we need to understand the permissions from the app domain model:
 
@@ -114,20 +179,28 @@ Then we want to look up all the workspaces (a) owned by this user, (b) where thi
       - SELECT * FROM attachment WHERE attachment."workspaceId" = bucket.workspace_id
 ```
 
-Have a look at `trelloappclone_powersync_client.dart/sync-rules-1.yaml` for the full set of rules; you can copy and paste this to `sync-rules.yaml` under your Powersync project instance, and deploy the rules.
+**To configure the improved sync rules, follow these steps:**
 
-## Build & Run the App
+- [ ] Copy the contents of `trelloappclone_powersync_client.dart/sync-rules-1.yaml`.
+- [ ] Paste this to `sync-rules.yaml` under your Powersync project instance
+- [ ] and click _"Deploy sync rules"_.
+- [ ] Confirm in the dialog and wait a couple of minutes for the deployment to complete.
 
-- Run ``` flutter pub get ``` to install the necessary packages on your command line that's navigated to the root of the project.
-- Invoke the ``` flutter run ``` command, and select either an Android device/emulator or iOS device/simulator as destination (Powersync does not support flutter web app yet)
+Now you can run the app again, and it should now only sync the subset of data that a logged in user actually has access to.
 
 ### Importing / Generating Data
 
-TODO
+When you run the app, after logging in, you will start without any workspaces or boards. It is possible to generate a workspace with sample boards and cards in order to make it easier to have enough data to experiment with, without having to manually create every item.
 
-## App Architecture
+- [ ] Sign up and log in to the app.
+- [ ] In the home view, tap on the "+" floating button in the lower right corner.
+- [ ] Tap on _"Sample Workspace"_ and give it a name — this will create a new workspace, with multiple boards with lists, and a random number of cards with checklists, comments and activities for each list. 
 
-TODO: explain how it sticks together
+<img src="sample_workspace.png" alt="drawing" width="360"/>
+
+## App Architecture Overview
+
+
 
 1. overview of layers (app, client lib)
 1. end-to-end discussion of how an entity is created, updated, watched, deleted
@@ -137,20 +210,21 @@ TODO: explain how it sticks together
 
 ### Changes from original Trello clone app
 
-TODO: decide if we want to discuss this in the tutorial.
+The app code was forked from the [Serverpod + Flutter Tutorial](https://github.com/Mobterest/serverpod_flutter_tutorial) code. It was changed in the following ways to facilitate the Powersync integration:
 
 - Updated data model so that all `id` fields are Strings, and using UUIDs (it was auto-increment integer fields in the original app)
 - Updated data model so that all entities refers to the `workspaceId` of workspace in which it was created (this facilitates the sync rules)
 
 ## Next Steps
 
-Below is a list of things that we still want to do to enhance the functionality and experience of this app.
+Below is a list of things that we can consider to do to enhance the functionality and experience of this app.
 
+* Fix Lists in a board to keep its order, and Cards in a list to keep its ranking
 * Update Workspace + Board edit views to use actual data and update the entity
 * Fix Members functionality (at least Workspace members invite/edit) to actually work
 * Get Comments & Checklists working properly
 * Allow user to import existing workspaces/board/etc from e.g. Trello (either via API or exported json)
-* Enhancing UX of app (there are many irritating issues and things not working yet in the original app, like keeping the order of the lists in a board)
+* Enhancing UX of app (there are many irritating issues and things not working yet in the original app)
 * Update of password or email
 * Enhance state management - e.g. let `TrelloProvider` listen to streams, and notify changes, to simplify views
 * Get the attachments to actually work (using Supabase files upload/download)
@@ -185,7 +259,7 @@ This tutorial is based on the [Serverpod + Flutter Tutorial](https://github.com/
 - [X] remove/hide/disable unused things (alternative logins, offline boards, my cards, members buttons)
 - [X] drag and drop must work
 - [X] disable invalid login/signup options
-- [ ] BUG: cards loaded inconsistently for boards
+- [X] BUG: cards loaded inconsistently for boards
 - [X] test on Android
 - [ ] README/Tutorial writing & cleanup
 - [ ] Look at using transactions (if time, else in next round))

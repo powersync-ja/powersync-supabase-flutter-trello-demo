@@ -37,8 +37,7 @@ import 'features/workspacesettings/presentation/index.dart';
 // Sets up a singleton client object that can be used to talk to the server from
 // anywhere in our app.
 // The client is set up to connect to a Powersync project already set up.
-var client = Client();
-//..connectivityMonitor = FlutterConnectivityMonitor();
+var dataClient = DataClient();
 
 TrelloProvider trello = TrelloProvider();
 
@@ -61,9 +60,9 @@ void main() async {
 
   WidgetsFlutterBinding
       .ensureInitialized(); //required to get sqlite filepath from path_provider before UI has initialized
-  await client.initialize();
-  if (client.isLoggedIn()){
-    TrelloUser? user = await client.getLoggedInUser();
+  await dataClient.initialize();
+  if (dataClient.isLoggedIn()){
+    TrelloUser? user = await dataClient.getLoggedInUser();
     trello.setUser(user!);
   }
   runApp(ChangeNotifierProvider(
@@ -82,7 +81,7 @@ class MyApp extends StatelessWidget {
               fontFamily: GoogleFonts.poppins().fontFamily,
             ),
       ),
-      initialRoute: client.isLoggedIn() ? '/home' : '/',
+      initialRoute: dataClient.isLoggedIn() ? '/home' : '/',
       routes: {
         '/': (context) => const Landing(),
         '/home': (context) => const Home(),
