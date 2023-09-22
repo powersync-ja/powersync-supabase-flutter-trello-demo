@@ -81,6 +81,7 @@ class _CustomDrawerState extends State<CustomDrawer> with Service {
                   // ),
                   ListTile(
                     leading: const Icon(Icons.settings),
+                    enabled: false,
                     title: const Text("Settings"),
                     onTap: () {
                       Navigator.pushNamed(context, '/settings');
@@ -88,6 +89,7 @@ class _CustomDrawerState extends State<CustomDrawer> with Service {
                   ),
                   ListTile(
                     leading: const Icon(Icons.help_outline_rounded),
+                    enabled: false,
                     title: const Text("Help!"),
                     onTap: () {},
                   ),
