@@ -110,7 +110,7 @@ CREATE TABLE "listboard" (
   "userId" uuid NOT NULL,
   "name" text NOT NULL,
   "archived" boolean,
-  "order" integer
+  "listOrder" integer
 );
 
 ALTER TABLE ONLY "listboard"
