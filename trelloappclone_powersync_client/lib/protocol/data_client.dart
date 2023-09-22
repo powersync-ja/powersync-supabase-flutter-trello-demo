@@ -402,11 +402,12 @@ class _ListboardRepository extends _Repository {
       return 0;
     }
 
-    //get transaction
+    //start transaction
     return client.getDBExecutor().writeTransaction((sqlContext) async {
       List<Cardlist> cards = list.cards!;
       int numCards = cards.length;
 
+      //we set each of the cards in the list to archived = true
       sqlContext.executeBatch('''
           UPDATE card
                   SET archived = 1
@@ -421,9 +422,9 @@ class _ListboardRepository extends _Repository {
                   WHERE id = ?
           ''', [list.id]);
 
-      //end transaction
       list.cards = [];
       return numCards;
+      //end of transaction
     }, debugContext: 'archiveCardsInList');
   }
 }

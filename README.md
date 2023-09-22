@@ -269,6 +269,48 @@ Now we can simply make use of a `StreamBuilder` to have a view component that up
             }
           })
 ```
+### Doing a Transaction
+
+It is possible to ensure that a number of related entities are updated in an atomic database transaction. As an example of this, look at `DataClient.archiveCardsInList`:
+
+```dart
+  /// Archive cards in and return how many were archived
+  /// This happens in a transaction
+  Future<int> archiveCardsInList(Listboard list) async {
+    if (list.cards == null || list.cards!.isEmpty) {
+      return 0;
+    }
+
+    //start a write transaction
+    return client.getDBExecutor().writeTransaction((sqlContext) async {
+      List<Cardlist> cards = list.cards!;
+      int numCards = cards.length;
+
+      //we set each of the cards in the list to archived = true
+      sqlContext.executeBatch('''
+          UPDATE card
+                  SET archived = 1
+                  WHERE id = ?
+          '''
+      , cards.map((card) => [card.id]).toList());
+
+      //touch listboard to trigger update via stream listeners on Listboard
+      sqlContext.execute('''
+          UPDATE listboard
+                  SET archived = 0
+                  WHERE id = ?
+          ''', [list.id]);
+
+      list.cards = [];
+      return numCards;
+      //end of transaction
+    }, debugContext: 'archiveCardsInList');
+  }
+}
+```
+
+The above code is invoked if you choose to archive all the cards in a list from the list popup menu.
+
 
 ### Changes from original Trello clone app
 
