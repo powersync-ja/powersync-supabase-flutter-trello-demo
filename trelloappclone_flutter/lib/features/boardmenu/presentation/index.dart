@@ -26,7 +26,6 @@ class _BoardMenuState extends State<BoardMenu> {
         ),
         title: const Text("Board menu"),
         centerTitle: false,
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.share))],
       ),
       body: SingleChildScrollView(
           child: Column(
@@ -147,38 +146,38 @@ class _BoardMenuState extends State<BoardMenu> {
               ),
             ),
           ),
-          Padding(
-              padding: const EdgeInsets.only(top: 15.0),
-              child: Container(
-                color: whiteShade,
-                child: ListTile(
-                  leading: const Icon(Icons.rocket),
-                  title: const Text("Power-Ups"),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/powerups');
-                  },
-                ),
-              )),
-          Padding(
-              padding: const EdgeInsets.only(top: 15.0),
-              child: Container(
-                color: whiteShade,
-                child: ListTile(
-                  leading: const Icon(Icons.push_pin_outlined),
-                  title: const Text("Pin to home screen"),
-                  onTap: () {},
-                ),
-              )),
-          const Padding(
-            padding: EdgeInsets.all(15.0),
-            child: Text(
-              "Activity",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          //TODO: figure out what is going on here
-          Activities(Cardlist(
-              id: "todo", workspaceId: trello.selectedWorkspace.id, listId: "todo", userId: trello.user.id, name: ""))
+          // Padding(
+          //     padding: const EdgeInsets.only(top: 15.0),
+          //     child: Container(
+          //       color: whiteShade,
+          //       child: ListTile(
+          //         leading: const Icon(Icons.rocket),
+          //         title: const Text("Power-Ups"),
+          //         onTap: () {
+          //           Navigator.pushNamed(context, '/powerups');
+          //         },
+          //       ),
+          //     )),
+          // Padding(
+          //     padding: const EdgeInsets.only(top: 15.0),
+          //     child: Container(
+          //       color: whiteShade,
+          //       child: ListTile(
+          //         leading: const Icon(Icons.push_pin_outlined),
+          //         title: const Text("Pin to home screen"),
+          //         onTap: () {},
+          //       ),
+          //     )),
+          // const Padding(
+          //   padding: EdgeInsets.all(15.0),
+          //   child: Text(
+          //     "Activity",
+          //     style: TextStyle(fontWeight: FontWeight.bold),
+          //   ),
+          // ),
+          // //TODO: figure out what is going on here
+          // Activities(Cardlist(
+          //     id: "todo", workspaceId: trello.selectedWorkspace.id, listId: "todo", userId: trello.user.id, name: ""))
         ],
       )),
     );

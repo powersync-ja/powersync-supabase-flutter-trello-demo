@@ -281,12 +281,11 @@ The app code was forked from the [Serverpod + Flutter Tutorial](https://github.c
 
 Below is a list of things that can be implemented to enhance the functionality and experience of this app.
 
+* Archive all cards in List by using a transaction
 * Fix Lists in a board to keep its order, and Cards in a list to keep its ranking
 * Update Workspace + Board edit views to use actual data and update the entity
 * Fix Members functionality (at least Workspace members invite/edit) to actually work
 * Get Comments & Checklists working properly
-* Enhancing UX of app (there are many irritating issues and things not working yet in the original app)
-* Update of password or email
 * Enhance state management - e.g. let `TrelloProvider` listen to streams, and notify changes, to simplify views
 * Get the attachments to actually work (using Supabase files upload/download)
 

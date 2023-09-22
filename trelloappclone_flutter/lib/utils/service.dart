@@ -60,7 +60,7 @@ mixin Service {
       if (context.mounted) {
         Navigator.pushNamed(context, '/home');
         StatusAlert.show(context,
-            duration: const Duration(seconds: 4),
+            duration: const Duration(seconds: 5),
             title: 'Syncing Workspaces...',
             configuration:
             const IconConfiguration(icon: Icons.sync, color: brandColor),
@@ -275,6 +275,10 @@ mixin Service {
         card: crd.id,
         workspaceId: crd.workspaceId,
         description: "${trello.user.name} updated the card ${crd.name}");
+  }
+
+  Future<int> archiveCardsInList(Listboard list) async {
+    return dataClient.listboard.archiveCardsInList(list);
   }
 
   //create activity

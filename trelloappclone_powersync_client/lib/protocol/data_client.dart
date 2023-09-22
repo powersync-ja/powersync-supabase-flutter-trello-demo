@@ -222,7 +222,7 @@ class _CardlistRepository extends _Repository {
 
   Future<List<Cardlist>> getCardsforList(String listId) async {
     final results = await client.getDBExecutor().execute('''
-          SELECT * FROM card WHERE listId = ?
+          SELECT * FROM card WHERE listId = ? AND archived = 0
            ''', [listId]);
     return results.map((row) => Cardlist.fromRow(row)).toList();
   }
@@ -380,6 +380,40 @@ class _ListboardRepository extends _Repository {
     } else {
       return Listboard.fromRow(results.first);
     }
+  }
+
+  /// Archive cards and return how many were archived
+  Future<int> archiveCardsInList(Listboard list) async {
+    if (list.cards == null || list.cards!.isEmpty) {
+      return 0;
+    }
+
+    //get transaction
+    return client.getDBExecutor().writeTransaction((sqlContext) async {
+      List<Cardlist> cards = list.cards!;
+      int numCards = cards.length;
+
+      sqlContext.executeBatch('''
+          UPDATE card
+                  SET archived = 1
+                  WHERE id = ?
+          '''
+      , cards.map((card) => [card.id]).toList());
+
+      //TODO: create new activity for each card archived?
+
+      //touch listboard to trigger update
+      sqlContext.execute('''
+          UPDATE listboard
+                  SET archived = 0
+                  WHERE id = ?
+          ''', [list.id]);
+
+      //end transaction
+      list.cards = [];
+      return numCards;
+    }, debugContext: 'archiveCardsInList');
+
   }
 }
 

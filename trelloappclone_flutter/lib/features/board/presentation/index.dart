@@ -3,6 +3,7 @@ import 'package:boardview/board_list.dart';
 import 'package:boardview/boardview.dart';
 import 'package:boardview/boardview_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:status_alert/status_alert.dart';
 import 'package:trelloappclone_flutter/features/carddetails/domain/card_detail_arguments.dart';
 import 'package:trelloappclone_flutter/features/carddetails/presentation/index.dart';
 import 'package:trelloappclone_flutter/utils/color.dart';
@@ -55,13 +56,6 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                   centerTitle: false,
                   title: Text(args.board.name),
                   actions: [
-                    IconButton(
-                        onPressed: () {}, icon: const Icon(Icons.filter_list)),
-                    IconButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, "/notifications");
-                        },
-                        icon: const Icon(Icons.notifications_none)),
                     IconButton(
                         onPressed: () {
                           Navigator.pushNamed(context, '/boardmenu');
@@ -251,16 +245,19 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                           <PopupMenuEntry<String>>[
                             PopupMenuItem<String>(
                               child: ListTile(
+                                enabled: false,
                                 title: Text(listMenu[1]),
                               ),
                             ),
                             PopupMenuItem<String>(
                               child: ListTile(
+                                enabled: false,
                                 title: Text(listMenu[2]),
                               ),
                             ),
                             PopupMenuItem<String>(
                               child: ListTile(
+                                enabled: false,
                                 title: Text(listMenu[3]),
                               ),
                             ),
@@ -271,6 +268,7 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                             )),
                             PopupMenuItem<String>(
                               child: ListTile(
+                                enabled: false,
                                 title: Text(listMenu[4]),
                                 trailing:
                                     const Icon(Icons.keyboard_arrow_right),
@@ -283,16 +281,29 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                             )),
                             PopupMenuItem<String>(
                               child: ListTile(
+                                enabled: false,
                                 title: Text(listMenu[5]),
                               ),
                             ),
                             PopupMenuItem<String>(
                               child: ListTile(
                                 title: Text(listMenu[6]),
+                                onTap: () {
+                                  archiveCardsInList(trello.lstbrd[index]).then((numCardsArchived) {
+                                    StatusAlert.show(context,
+                                        duration: const Duration(seconds: 2),
+                                        title: '$numCardsArchived Cards Archived',
+                                        configuration:
+                                        const IconConfiguration(icon: Icons.archive_outlined, color: brandColor),
+                                        maxWidth: 260);
+                                    Navigator.of(context).pop();
+                                  });
+                                },
                               ),
                             ),
                             PopupMenuItem<String>(
                               child: ListTile(
+                                enabled: false,
                                 title: Text(listMenu[7]),
                               ),
                             ),

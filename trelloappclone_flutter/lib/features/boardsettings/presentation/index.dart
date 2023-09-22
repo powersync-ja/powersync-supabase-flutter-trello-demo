@@ -57,34 +57,34 @@ class _BoardSettingsState extends State<BoardSettings> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 3.0),
-              child: Container(
-                color: whiteShade,
-                child: ListTile(
-                  leading: const Text("Enable card cover images"),
-                  trailing: Switch(value: true, onChanged: ((value) {})),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 3.0),
-              child: Container(
-                color: whiteShade,
-                child: ListTile(
-                    leading: const Text("Watch"),
-                    trailing: Switch(value: false, onChanged: ((value) {}))),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 3.0),
-              child: Container(
-                color: whiteShade,
-                child: ListTile(
-                    leading: const Text("Available offline"),
-                    trailing: Switch(value: false, onChanged: ((value) {}))),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.only(top: 3.0),
+            //   child: Container(
+            //     color: whiteShade,
+            //     child: ListTile(
+            //       leading: const Text("Enable card cover images"),
+            //       trailing: Switch(value: true, onChanged: ((value) {})),
+            //     ),
+            //   ),
+            // ),
+            // Padding(
+            //   padding: const EdgeInsets.only(top: 3.0),
+            //   child: Container(
+            //     color: whiteShade,
+            //     child: ListTile(
+            //         leading: const Text("Watch"),
+            //         trailing: Switch(value: false, onChanged: ((value) {}))),
+            //   ),
+            // ),
+            // Padding(
+            //   padding: const EdgeInsets.only(top: 3.0),
+            //   child: Container(
+            //     color: whiteShade,
+            //     child: ListTile(
+            //         leading: const Text("Available offline"),
+            //         trailing: Switch(value: false, onChanged: ((value) {}))),
+            //   ),
+            // ),
             Padding(
               padding: const EdgeInsets.only(top: 3.0),
               child: Container(
@@ -101,42 +101,42 @@ class _BoardSettingsState extends State<BoardSettings> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 3.0),
-              child: Container(
-                color: whiteShade,
-                child: ListTile(
-                  leading: const Text("Email-to-board settings"),
-                  onTap: () {
-                    Navigator.pushNamed(context, "/emailtoboard");
-                  },
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 3.0),
-              child: Container(
-                color: whiteShade,
-                child: ListTile(
-                  leading: const Text("Archived cards"),
-                  onTap: () {
-                    Navigator.pushNamed(context, "/archivedcards");
-                  },
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 3.0),
-              child: Container(
-                color: whiteShade,
-                child: ListTile(
-                  leading: const Text("Archived lists"),
-                  onTap: () {
-                    Navigator.pushNamed(context, "/archivedlists");
-                  },
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.only(top: 3.0),
+            //   child: Container(
+            //     color: whiteShade,
+            //     child: ListTile(
+            //       leading: const Text("Email-to-board settings"),
+            //       onTap: () {
+            //         Navigator.pushNamed(context, "/emailtoboard");
+            //       },
+            //     ),
+            //   ),
+            // ),
+            // Padding(
+            //   padding: const EdgeInsets.only(top: 3.0),
+            //   child: Container(
+            //     color: whiteShade,
+            //     child: ListTile(
+            //       leading: const Text("Archived cards"),
+            //       onTap: () {
+            //         Navigator.pushNamed(context, "/archivedcards");
+            //       },
+            //     ),
+            //   ),
+            // ),
+            // Padding(
+            //   padding: const EdgeInsets.only(top: 3.0),
+            //   child: Container(
+            //     color: whiteShade,
+            //     child: ListTile(
+            //       leading: const Text("Archived lists"),
+            //       onTap: () {
+            //         Navigator.pushNamed(context, "/archivedlists");
+            //       },
+            //     ),
+            //   ),
+            // ),
             Padding(
               padding: const EdgeInsets.only(top: 15.0),
               child: Container(
