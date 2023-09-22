@@ -10,6 +10,7 @@ class Cardlist {
     this.description,
     this.startDate,
     this.dueDate,
+    required this.rank,
     this.attachment,
     this.archived,
     this.checklist,
@@ -32,6 +33,8 @@ class Cardlist {
 
   final DateTime? dueDate;
 
+  int rank;
+
   final bool? attachment;
 
   final bool? archived;
@@ -50,6 +53,7 @@ class Cardlist {
         description: row['description'],
         startDate: row['startDate'] != null ? DateTime.parse(row['startDate']) : null,
         dueDate: row['dueDate']  != null ? DateTime.parse(row['dueDate']) : null,
+        rank: row['rank'],
         attachment: row['attachment'] == 1,
         archived: row['archived'] == 1,
         checklist: row['checklist'] == 1,

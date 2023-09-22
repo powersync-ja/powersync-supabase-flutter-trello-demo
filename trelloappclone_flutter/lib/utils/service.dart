@@ -258,6 +258,11 @@ mixin Service {
         description: "${trello.user.name} added a new list ${lst.name}");
   }
 
+  //add list
+  Future<void> updateListOrder(String listId, int newOrder) async {
+    await dataClient.listboard.updateListOrder(listId, newOrder);
+  }
+
   //add card
   Future<void> addCard(Cardlist crd) async {
     Cardlist newcrd = await dataClient.card.createCard(crd);

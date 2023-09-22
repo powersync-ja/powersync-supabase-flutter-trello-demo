@@ -10,6 +10,7 @@ class Listboard {
     required this.name,
     this.archived,
     this.cards,
+    required this.order,
   });
 
   final String id;
@@ -24,6 +25,8 @@ class Listboard {
 
   final bool? archived;
 
+  final int order;
+
   List<Cardlist>? cards;
 
   factory Listboard.fromRow(sqlite.Row row) {
@@ -34,6 +37,7 @@ class Listboard {
         userId: row['userId'],
         name: row['name'],
         archived: row['archived'] == 1,
+        order: row['listOrder'],
         cards: []
     );
   }

@@ -82,7 +82,8 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                                 workspaceId: args.workspace.id,
                                 boardId: args.board.id,
                                 userId: trello.user.id,
-                                name: nameController.text));
+                                name: nameController.text,
+                            order: trello.lstbrd.length));
                             nameController.clear();
                             setState(() {
                               show = false;
@@ -94,7 +95,8 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                                 listId: trello.lstbrd[selectedList].id,
                                 userId: trello.user.id,
                                 name: textEditingControllers[selectedList]!
-                                    .text));
+                                    .text,
+                                rank: trello.lstbrd[selectedList].cards!.length));
                             setState(() {
                               showCard = false;
                               showtheCard[selectedCard] = false;
@@ -131,14 +133,23 @@ class _BoardScreenState extends State<BoardScreen> with Service {
         onDropItem: (listIndex, itemIndex, oldListIndex, oldItemIndex, state) {
           var item = data[oldListIndex!].items![oldItemIndex!];
           data[oldListIndex].items!.removeAt(oldItemIndex);
-          data[listIndex!].items!.insert(itemIndex!, item);
 
+          //update new destination item rankings for cards >=  itemIndex
+          trello.lstbrd[listIndex!].cards!.where((card) => card.rank >= itemIndex!).forEach((card) {
+            card.rank += 1;
+            updateCard(card);
+          });
+
+          //now add new card
+          data[listIndex].items!.insert(itemIndex!, item);
+          trello.lstbrd[oldListIndex].cards![oldItemIndex].rank = itemIndex;
           updateCard(Cardlist(
               id: trello.lstbrd[oldListIndex].cards![oldItemIndex].id,
               workspaceId: trello.selectedWorkspace.id,
               listId: trello.lstbrd[listIndex].id,
               userId: trello.user.id,
-              name: item.title!));
+              name: item.title!,
+              rank: itemIndex));
         },
         onTapItem: (listIndex, itemIndex, state) {
           Navigator.pushNamed(context, CardDetails.routeName,
@@ -220,6 +231,7 @@ class _BoardScreenState extends State<BoardScreen> with Service {
         var list = data[oldListIndex!];
         data.removeAt(oldListIndex);
         data.insert(listIndex!, list);
+        updateListOrder(list.listId!, listIndex);
       },
       headerBackgroundColor: brandColor,
       backgroundColor: brandColor,
@@ -321,6 +333,7 @@ class _BoardScreenState extends State<BoardScreen> with Service {
     for (int i = 0; i < lists.length; i++) {
       listData.add(BoardListObject(
                   title: lists[i].name,
+                  listId: lists[i].id,
                   items: generateBoardItemObject(lists[i].cards!))
         );
     }

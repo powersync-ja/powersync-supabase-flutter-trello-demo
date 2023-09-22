@@ -109,7 +109,8 @@ CREATE TABLE "listboard" (
   "boardId" uuid NOT NULL,
   "userId" uuid NOT NULL,
   "name" text NOT NULL,
-  "archived" boolean
+  "archived" boolean,
+  "order" integer
 );
 
 ALTER TABLE ONLY "listboard"
@@ -139,6 +140,7 @@ CREATE TABLE "card" (
   "description" text,
   "startDate" timestamp without time zone,
   "dueDate" timestamp without time zone,
+  "rank" integer,
   "attachment" boolean,
   "archived" boolean,
   "checklist" boolean,

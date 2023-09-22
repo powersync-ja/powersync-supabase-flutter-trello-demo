@@ -38,8 +38,8 @@ class DataGenerator with Service {
 
   createSampleWorkspace(String workspaceName, TrelloProvider trello, BuildContext context) async {
     StatusAlert.show(context,
-        duration: const Duration(seconds: 5),
-        title: 'Syncing Workspaces...',
+        duration: const Duration(seconds: 3),
+        title: 'Generating Workspace Data...',
         configuration:
         const IconConfiguration(icon: Icons.sync, color: brandColor),
         maxWidth: 260);
@@ -56,6 +56,7 @@ class DataGenerator with Service {
           background: backgrounds[random.nextInt(16)]);
       await createBoard(context, newBoard);
 
+      int listIndex = 1;
       //create lists for each board
       for(String listName in _generateListNames()) {
         Listboard newList = Listboard(
@@ -63,17 +64,20 @@ class DataGenerator with Service {
             workspaceId: workspace.id,
             boardId: newBoard.id,
             userId: trello.user.id,
-            name: listName);
+            name: listName,
+            order: listIndex++);
         await addList(newList);
 
         //create cards per list
+        int cardIndex = 1;
         for (String cardName in _generateCardNames(listName, random.nextInt(10))) {
           Cardlist newCard = Cardlist(
               id: randomUuid(),
               workspaceId: workspace.id,
               listId: newList.id,
               userId: trello.user.id,
-              name: cardName);
+              name: cardName,
+          rank: cardIndex++);
           await addCard(newCard);
           await createComment(Comment(
             id: randomUuid(),

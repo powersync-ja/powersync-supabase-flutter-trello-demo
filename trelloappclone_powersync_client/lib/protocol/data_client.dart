@@ -170,8 +170,8 @@ class _CardlistRepository extends _Repository {
 
   String get insertQuery => '''
   INSERT INTO
-           card(id, workspaceId, listId, userId, name, description, startDate, dueDate, attachment, archived, checklist, comments)
-           VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)
+           card(id, workspaceId, listId, userId, name, description, startDate, dueDate, attachment, archived, checklist, comments, rank)
+           VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)
   ''';
 
   Future<Cardlist> createCard(Cardlist cardlist) async {
@@ -188,7 +188,8 @@ class _CardlistRepository extends _Repository {
       boolAsInt(cardlist.attachment),
       boolAsInt(cardlist.archived),
       boolAsInt(cardlist.checklist),
-      boolAsInt(cardlist.comments)
+      boolAsInt(cardlist.comments),
+      cardlist.rank,
     ]);
     if (results.isEmpty) {
       throw Exception("Failed to add Cardlist");
@@ -199,8 +200,8 @@ class _CardlistRepository extends _Repository {
 
   String get updateQuery => '''
   UPDATE card
-          set listId = ?1, userId = ?2, name = ?3, description = ?4, startDate = ?5, dueDate = ?6, attachment = ?7, archived = ?8, checklist = ?9, comments = ?10
-          WHERE id = ?11
+          set listId = ?1, userId = ?2, name = ?3, description = ?4, startDate = ?5, dueDate = ?6, attachment = ?7, archived = ?8, checklist = ?9, comments = ?10, rank = ?11
+          WHERE id = ?12
   ''';
 
   Future<bool> updateCard(Cardlist cardlist) async {
@@ -215,6 +216,7 @@ class _CardlistRepository extends _Repository {
       boolAsInt(cardlist.archived),
       boolAsInt(cardlist.checklist),
       boolAsInt(cardlist.comments),
+      cardlist.rank,
       cardlist.id
     ]);
     return true;
@@ -222,7 +224,7 @@ class _CardlistRepository extends _Repository {
 
   Future<List<Cardlist>> getCardsforList(String listId) async {
     final results = await client.getDBExecutor().execute('''
-          SELECT * FROM card WHERE listId = ? AND archived = 0
+          SELECT * FROM card WHERE listId = ? AND archived = 0 ORDER BY rank ASC
            ''', [listId]);
     return results.map((row) => Cardlist.fromRow(row)).toList();
   }
@@ -350,7 +352,7 @@ class _ListboardRepository extends _Repository {
   Stream<List<Listboard>> watchListsByBoard({required String boardId}) {
     //first we get the listboards
     return client.getDBExecutor().watch('''
-          SELECT * FROM listboard WHERE boardId = ?
+          SELECT * FROM listboard WHERE boardId = ? ORDER BY listOrder ASC
            ''', parameters: [boardId]).asyncMap((event) async {
       List<Listboard> lists =
         event.map((row) => Listboard.fromRow(row)).toList();
@@ -367,14 +369,14 @@ class _ListboardRepository extends _Repository {
 
   String get insertQuery => '''
   INSERT INTO
-           listboard(id, workspaceId, boardId, userId, name, archived)
-           VALUES(?1, ?2, ?3, ?4, ?5, ?6)
+           listboard(id, workspaceId, boardId, userId, name, archived, listOrder)
+           VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7)
   ''';
 
   Future<Listboard> createList(Listboard lst) async {
     final results = await client.getDBExecutor().execute(
         '$insertQuery RETURNING *',
-        [lst.id, lst.workspaceId, lst.boardId, lst.userId, lst.name, boolAsInt(lst.archived)]);
+        [lst.id, lst.workspaceId, lst.boardId, lst.userId, lst.name, boolAsInt(lst.archived), lst.order]);
     if (results.isEmpty) {
       throw Exception("Failed to add Listboard");
     } else {
@@ -382,7 +384,19 @@ class _ListboardRepository extends _Repository {
     }
   }
 
-  /// Archive cards and return how many were archived
+  String get updateQuery => '''
+  UPDATE listboard
+          set listOrder = ?1
+          WHERE id = ?2
+  ''';
+
+  Future<void> updateListOrder(String listId, int newOrder) async {
+    await client.getDBExecutor().execute(updateQuery,
+        [newOrder, listId]);
+  }
+
+  /// Archive cards in and return how many were archived
+  /// This happens in a transaction
   Future<int> archiveCardsInList(Listboard list) async {
     if (list.cards == null || list.cards!.isEmpty) {
       return 0;
@@ -400,9 +414,7 @@ class _ListboardRepository extends _Repository {
           '''
       , cards.map((card) => [card.id]).toList());
 
-      //TODO: create new activity for each card archived?
-
-      //touch listboard to trigger update
+      //touch listboard to trigger update via stream listeners on Listboard
       sqlContext.execute('''
           UPDATE listboard
                   SET archived = 0
@@ -413,7 +425,6 @@ class _ListboardRepository extends _Repository {
       list.cards = [];
       return numCards;
     }, debugContext: 'archiveCardsInList');
-
   }
 }
 
