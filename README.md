@@ -20,21 +20,20 @@ Before you proceed, we assume that you have already signed up for free accounts 
 Next up we will follow these steps:
 
 1. Configure Supabase:
-* Create the database schema
-* Create the Postgres publication
+    - Create the database schema
+    - Create the Postgres publication
 2. Configure PowerSync:
-* Create connection to Supabase
-* Configure global Sync Rules
-3. Configure the Trello clone app
-4. Run the app and test
-5. Configure improved Sync Rules
-6. Run the app and test
+    - Create connection to Supabase
+    - Configure global Sync Rules
+4. Configure the Trello clone app
+5. Run the app and test
+6. Configure improved Sync Rules
+7. Run the app and test
 
 ## Configure Supabase
 
-- [ ] Create a new Supabase project (or use an existing project if you prefer) and follow the below steps.
-
-- [ ] For ease of use of this Flutter app, you can **disable email confirmation** in your Supabase Auth settings. In your Supabase project, go to _"Authentication"_ --> _"Providers"_ -> _"Email"_ and then disable _"Confirm email"_. If you keep email confirmation enabled, the Supabase user confirmation email will reference the default Supabase Site URL of http://localhost:3000 — you can ignore this.
+- Create a new Supabase project (or use an existing project if you prefer) and follow the below steps.
+- For ease of use of this Flutter app, you can **disable email confirmation** in your Supabase Auth settings. In your Supabase project, go to _"Authentication"_ --> _"Providers"_ -> _"Email"_ and then disable _"Confirm email"_. If you keep email confirmation enabled, the Supabase user confirmation email will reference the default Supabase Site URL of http://localhost:3000 — you can ignore this.
 
 ### Create the Database Schema
 After creating the Supabase project, we still need to create the tables in the database. For this application we need the following tables:
@@ -53,15 +52,16 @@ After creating the Supabase project, we still need to create the tables in the d
 
 _(We give a brief overview of the app domain model later in this README.)_
 
-- [ ] Open the `tables.pgsql` file, and copy the contents. 
-- [ ] Paste this into the *Supabase SQL Editor*
-- [ ] Run the SQL statements in the SQL Editor. (If you get a warning about a "potentially destructive operation", that's a false positive that you can safely ignore.)
+Do the following:
+- Open the `tables.pgsql` file, and copy the contents. 
+- Paste this into the *Supabase SQL Editor*
+- Run the SQL statements in the Supabase SQL Editor. (If you get a warning about a "potentially destructive operation", that's a false positive that you can safely ignore.)
 
 ### Create the Postgres Publication
 
 PowerSync uses the Postgres [Write Ahead Log (WAL)](https://www.postgresql.org/docs/current/wal-intro.html) to replicate data changes in order to keep PowerSync SDK clients up to date. To enable this we need to create a `publication` in Supabase.
 
-- [ ] Run the below SQL statement in your Supabase SQL Editor:
+Run the below SQL statement in your Supabase SQL Editor:
 ```sql
 create publication powersync for table activity, attachment, board, card, checklist, comment, listboard, member, trellouser, workspace;
 ```
@@ -70,23 +70,23 @@ create publication powersync for table activity, attachment, board, card, checkl
 
 We need to connect PowerSync to the Supabase Postgres database:
 
-- [ ] In the [PowerSync dashboard](https://powersync.journeyapps.com/) project tree, click on _"Create new instance"_.
+- In the [PowerSync dashboard](https://powersync.journeyapps.com/) project tree, click on _"Create new instance"_.
 
-- [ ] Give your instance a name, such as _"Trello Clone"_.
+- Give your instance a name, such as _"Trello Clone"_.
  
-- [ ] In the _"Edit Instance"_ dialog, navigate to the _"Credentials"_ tab and enable _"Use Supabase Auth"_.
+- In the _"Edit Instance"_ dialog, navigate to the _"Credentials"_ tab and enable _"Use Supabase Auth"_.
 
-- [ ] Under the _"Connections"_ tab, click on the + icon.
+- Under the _"Connections"_ tab, click on the + icon.
 
-- [ ] On the subsequent screen, we'll configure the connection to Supabase. This is simplest using your Supabase database URI. In your Supabase dashboard, navigate to _"Project Settings"_ -> _"Database"_. Then, under the _"Connection String"_ section, switch to URI and copy the value.
+- On the subsequent screen, we'll configure the connection to Supabase. This is simplest using your Supabase database URI. In your Supabase dashboard, navigate to _"Project Settings"_ -> _"Database"_. Then, under the _"Connection String"_ section, switch to URI and copy the value.
 
-- [ ] Paste the copied value into the _"URI"_ field in PowerSync.
+- Paste the copied value into the _"URI"_ field in PowerSync.
 
-- [ ] Enter the Password for the `postgres` user in your Supabase database. (Supabase also [refers to this password](https://supabase.com/docs/guides/database/managing-passwords) as the database password or project password)
+- Enter the Password for the `postgres` user in your Supabase database. (Supabase also [refers to this password](https://supabase.com/docs/guides/database/managing-passwords) as the database password or project password)
 
-- [ ] Click _"Test Connection"_ and fix any errors.
+- Click _"Test Connection"_ and fix any errors.
 
-- [ ] Click "Save"
+- Click "Save"
 
 PowerSync deploys and configures an isolated cloud environment for you, which will take a few minutes to complete.
 
@@ -100,9 +100,9 @@ PowerSync [Sync Rules](https://docs.powersync.co/usage/sync-rules) allow develop
 
 We can be naive about it, and start by using a global bucket definition that at least specifies in some way which users can get data. 
 
-- [ ] Copy the contents of `trelloappclone_powersync_client.dart/sync-rules-0.yaml` to `sync-rules.yaml` under your PowerSync project instance.
-- [ ] In the top right of the `sync-rules.yaml` editor, click _"Deploy sync rules"_. 
-- [ ] Confirm in the dialog and wait a couple of minutes for the deployment to complete. 
+- Copy the contents of `trelloappclone_powersync_client.dart/sync-rules-0.yaml` to `sync-rules.yaml` under your PowerSync project instance.
+- In the top right of the `sync-rules.yaml` editor, click _"Deploy sync rules"_. 
+- Confirm in the dialog and wait a couple of minutes for the deployment to complete. 
 
 When you now run the app (after completing the next step to configure and run the app), it will actually show and retain data. The app code itself applies some basic filtering to only show data that belongs to the current user, or according to the visibility and membership settings of the various workspaces and boards.
 
@@ -111,18 +111,18 @@ When you now run the app (after completing the next step to configure and run th
 
 We need to configure the app to use the correct PowerSync and Supabase projects.
 
-- [ ] Open and edit the `trelloappclone_powersync_client.dart/lib/app_config.dart` file.
-- [ ] Replace the values for `supabaseUrl` and `supabaseAnonKey` (You can find these under _"Project Settings"_ -> _"API"_ in your Supabase dashboard — under the _"URL"_ section, and anon key under _"Project API keys"_.)
-- [ ] For the value of powersyncUrl, follow these steps:
-1. In the project tree on the PowerSync dashboard, right-click on the instance you created earlier.
-2. Click _"Edit instance"_.
-3. Click on _"Instance URL"_ to copy the value.
+- Open and edit the `trelloappclone_powersync_client.dart/lib/app_config.dart` file.
+- Replace the values for `supabaseUrl` and `supabaseAnonKey` (You can find these under _"Project Settings"_ -> _"API"_ in your Supabase dashboard — under the _"URL"_ section, and anon key under _"Project API keys"_.)
+- For the value of `powersyncUrl`, follow these steps:
+   1. In the project tree on the PowerSync dashboard, right-click on the instance you created earlier.
+   2. Click _"Edit instance"_.
+   3. Click on _"Instance URL"_ to copy the value.
  
 
 ## Build & Run the Flutter App
 
-- [ ] Run ``` flutter pub get ``` to install the necessary packages (in the root directory of the project.)
-- [ ] Invoke the ``` flutter run ``` command, and select either an Android device/emulator or iOS device/simulator as destination (_Note: PowerSync does not support Flutter web apps yet._)
+- Run ``` flutter pub get ``` to install the necessary packages (in the root directory of the project.)
+- Invoke the ``` flutter run ``` command, and select either an Android device/emulator or iOS device/simulator as destination (_Note: PowerSync does not support Flutter web apps yet._)
 
 
 ## Configuring Sync Rules - 2
@@ -184,10 +184,10 @@ Then we want to look up all the workspaces (a) owned by this user, (b) where thi
 
 **To Configure the Improved Sync Rules, Follow These Steps:**
 
-- [ ] Copy the contents of `trelloappclone_powersync_client.dart/sync-rules-1.yaml`.
-- [ ] Paste this to `sync-rules.yaml` under your PowerSync project instance
-- [ ] and click _"Deploy sync rules"_.
-- [ ] Confirm in the dialog and wait a couple of minutes for the deployment to complete.
+- Copy the contents of `trelloappclone_powersync_client.dart/sync-rules-1.yaml`.
+- Paste this to `sync-rules.yaml` under your PowerSync project instance
+- Click _"Deploy sync rules"_.
+- Confirm in the dialog and wait a couple of minutes for the deployment to complete.
 
 Now you can run the app again, and it should now only sync the subset of data that a logged in user actually has access to.
 
@@ -195,9 +195,9 @@ Now you can run the app again, and it should now only sync the subset of data th
 
 When you run the app, after logging in, you will start without any workspaces or boards. It is possible to generate a workspace with sample boards and cards in order to make it easier to have enough data to experiment with, without having to manually create every item.
 
-- [ ] Sign up and log in to the app.
-- [ ] In the home view, tap on the "+" floating button in the lower right corner.
-- [ ] Tap on _"Sample Workspace"_ and give it a name — this will create a new workspace, with multiple boards with lists, and a random number of cards with checklists, comments and activities for each list. 
+- Sign up and log in to the app.
+- In the home view, tap on the "+" floating button in the lower right corner.
+- Tap on _"Sample Workspace"_ and give it a name — this will create a new workspace, with multiple boards with lists, and a random number of cards with checklists, comments and activities for each list. 
 
 <img src="sample_workspace.png" alt="drawing" width="360"/>
 
