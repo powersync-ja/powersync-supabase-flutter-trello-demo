@@ -1,4 +1,5 @@
 // This file performs setup of the PowerSync database
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -6,7 +7,6 @@ import 'package:powersync/powersync.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:trelloappclone_powersync_client/models/user.dart';
 
-import '../app_config.dart';
 import '../models/schema.dart';
 
 final log = Logger('powersync-supabase');
@@ -61,7 +61,7 @@ class SupabaseConnector extends PowerSyncBackendConnector {
         ? null
         : DateTime.fromMillisecondsSinceEpoch(session.expiresAt! * 1000);
     return PowerSyncCredentials(
-        endpoint: AppConfig.powersyncUrl,
+        endpoint: dotenv.env['POWERSYNC_URL']!,
         token: token,
         userId: userId,
         expiresAt: expiresAt);
@@ -154,6 +154,7 @@ class PowerSyncClient {
 
   Future<void> initialize() async {
     if (!_isInitialized) {
+      await dotenv.load(fileName: '.env');
       await _openDatabase();
       _isInitialized = true;
     }
@@ -182,8 +183,8 @@ class PowerSyncClient {
 
   _loadSupabase() async {
     await Supabase.initialize(
-      url: AppConfig.supabaseUrl,
-      anonKey: AppConfig.supabaseAnonKey,
+      url: dotenv.env['SUPABASE_URL']!,
+      anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
     );
   }
 

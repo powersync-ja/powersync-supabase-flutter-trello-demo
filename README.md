@@ -111,9 +111,9 @@ When you now run the app (after completing the next step to configure and run th
 
 We need to configure the app to use the correct PowerSync and Supabase projects.
 
-- Open and edit the `trelloappclone_powersync_client.dart/lib/app_config.dart` file.
-- Replace the values for `supabaseUrl` and `supabaseAnonKey` (You can find these under _"Project Settings"_ -> _"API"_ in your Supabase dashboard — under the _"URL"_ section, and anon key under _"Project API keys"_.)
-- For the value of `powersyncUrl`, follow these steps:
+- Copy the `trelloappclone_flutter/.env.template` file to `trelloappclone_flutter/.env`.
+- Replace the values for `SUPABASE_URL` and `SUPABASE_ANON_KEY` (You can find these under _"Project Settings"_ -> _"API"_ in your Supabase dashboard — under the _"URL"_ section, and anon key under _"Project API keys"_.)
+- For the value of `POWERSYNC_URL`, follow these steps:
    1. In the project tree on the PowerSync dashboard, right-click on the instance you created earlier.
    2. Click _"Edit instance"_.
    3. Click on _"Instance URL"_ to copy the value.
