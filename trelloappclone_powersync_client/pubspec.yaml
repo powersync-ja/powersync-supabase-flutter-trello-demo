@@ -1,13 +1,13 @@
 name: trelloappclone_powersync_client
 description: PowerSync Trello Client
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.1+1
 
 environment:
   sdk: '>=2.17.0 <4.0.0'
 
 dependencies:
-  powersync: ^0.4.0
+  powersync: ^0.4.1
   path_provider: ^2.0.12
   supabase_flutter: ^1.6.2
   path: ^1.8.2
