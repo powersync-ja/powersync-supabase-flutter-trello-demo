@@ -564,8 +564,8 @@ class _WorkspaceRepository extends _Repository {
   Stream<List<Workspace>> watchWorkspacesByUser({required String userId}) {
     //First we get the workspaces
     return client.getDBExecutor().watch('''
-          SELECT * FROM workspace WHERE userId = ?
-           ''', parameters: [userId]).asyncMap((event) async {
+          SELECT * FROM workspace
+           ''', ).asyncMap((event) async {
       List<Workspace> workspaces = event.map((row) => Workspace.fromRow(row)).toList();
 
       //Then we get the members for each workspace
