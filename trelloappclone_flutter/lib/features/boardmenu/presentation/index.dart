@@ -108,10 +108,15 @@ class _BoardMenuState extends State<BoardMenu> {
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 18.0),
-                    child: CircleAvatar(
-                      backgroundColor: brandColor,
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 18.0),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/members');
+                      },
+                      child: Row(
+                        children: buildMemberAvatars(),
+                      ),
                     ),
                   ),
                   Padding(
@@ -125,7 +130,7 @@ class _BoardMenuState extends State<BoardMenu> {
                         onPressed: () {
                           Navigator.pushNamed(context, "/invitemember");
                         },
-                        child: const Text("Invite"),
+                        child: const Text("Invite to workspace"),
                       ),
                     ),
                   )
@@ -182,4 +187,22 @@ class _BoardMenuState extends State<BoardMenu> {
       )),
     );
   }
+
+  List<Widget> buildMemberAvatars() {
+    List<Widget> avatars = [];
+
+    trello.selectedWorkspace.members?.forEach((member) {
+      avatars.add(
+          CircleAvatar(
+            backgroundColor: brandColor,
+            child: Text(member.name[0].toUpperCase()),
+          )
+      );
+      avatars.add(
+          const SizedBox(width: 4,)
+      );
+    });
+    return avatars;
+  }
+
 }
