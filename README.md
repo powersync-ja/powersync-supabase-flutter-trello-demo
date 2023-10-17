@@ -325,7 +325,6 @@ The app code was forked from the [Serverpod + Flutter Tutorial](https://github.c
 
 Below is a list of things that can be implemented to enhance the functionality and experience of this app:
 
-* Fix Members functionality (at least Workspace members invite/edit) to actually work
 * Update Workspace + Board edit views to use actual data and update the entity
 * Get Comments & Checklists working properly
 * Enhance state management - e.g. let `TrelloProvider` listen to streams, and notify changes, to simplify views
