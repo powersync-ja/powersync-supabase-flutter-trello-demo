@@ -98,6 +98,14 @@ mixin Service {
     }
   }
 
+  switchToOfflineMode() async {
+    dataClient.switchToOfflineMode();
+  }
+
+  switchToOnlineMode() async {
+    dataClient.switchToOnlineMode();
+  }
+
   //search for a board
   search(BuildContext context) async {
     List<Board> allboards = await dataClient.board.getAllBoards();

@@ -49,18 +49,18 @@ PODS:
     - FlutterMacOS
   - sign_in_with_apple (0.0.1):
     - Flutter
-  - sqlite3 (3.43.0):
-    - sqlite3/common (= 3.43.0)
-  - sqlite3/common (3.43.0)
-  - sqlite3/fts5 (3.43.0):
+  - sqlite3 (3.43.1):
+    - sqlite3/common (= 3.43.1)
+  - sqlite3/common (3.43.1)
+  - sqlite3/fts5 (3.43.1):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.43.0):
+  - sqlite3/perf-threadsafe (3.43.1):
     - sqlite3/common
-  - sqlite3/rtree (3.43.0):
+  - sqlite3/rtree (3.43.1):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
-    - sqlite3 (~> 3.43.0)
+    - sqlite3 (~> 3.43.1)
     - sqlite3/fts5
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
@@ -119,12 +119,12 @@ SPEC CHECKSUMS:
   file_picker: ce3938a0df3cc1ef404671531facef740d03f920
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
-  path_provider_foundation: eaf5b3e458fc0e5fbb9940fb09980e853fe058b8
+  path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   SDWebImage: 2aea163b50bfcb569a2726b6a754c54a4506fcf6
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   sign_in_with_apple: f3bf75217ea4c2c8b91823f225d70230119b8440
-  sqlite3: 7afcf055d3700254769a4dcba56f27d26b5515c9
-  sqlite3_flutter_libs: 878ccbdcfd7b7cb41a774ec238223d876880c5ec
+  sqlite3: e0a0623a33a20a47cb5921552aebc6e9e437dc91
+  sqlite3_flutter_libs: 0d61e18fab1bed977dbd2d2fc76a726044ca00e7
   SwiftyGif: 93a1cc87bf3a51916001cf8f3d63835fb64c819f
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
   webview_flutter_wkwebview: 2e2d318f21a5e036e2c3f26171342e95908bd60a

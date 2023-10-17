@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:empty_widget/empty_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:logging/logging.dart';
 import 'package:trelloappclone_flutter/main.dart';
 import 'package:trelloappclone_powersync_client/trelloappclone_powersync_client.dart';
 import 'package:trelloappclone_flutter/features/board/domain/board_arguments.dart';
@@ -13,6 +14,8 @@ import '../../../utils/service.dart';
 import '../../../utils/widgets.dart';
 import '../../drawer/presentation/index.dart';
 import 'custom_floating_action.dart';
+
+final log = Logger('powersync-supabase');
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -31,8 +34,9 @@ class _HomeState extends State<Home> with Service {
 
     _connectionState = dataClient.getCurrentSyncStatus();
     _syncStatusSubscription = dataClient.getStatusStream().listen((event) {
+      log.info('Sync Status: $event');
       setState(() {
-        _connectionState = dataClient.getCurrentSyncStatus();
+        _connectionState = event;
       });
     });
   }
@@ -46,15 +50,19 @@ class _HomeState extends State<Home> with Service {
 
   @override
   Widget build(BuildContext context) {
-    const connectedIcon = IconButton(
-      icon: Icon(Icons.wifi),
+    IconButton connectedIcon = IconButton(
+      icon: const Icon(Icons.wifi),
       tooltip: 'Connected',
-      onPressed: null,
+      onPressed: () {
+        switchToOfflineMode();
+      },
     );
-    const disconnectedIcon = IconButton(
-      icon: Icon(Icons.wifi_off),
+    IconButton disconnectedIcon = IconButton(
+      icon: const Icon(Icons.wifi_off),
       tooltip: 'Not connected',
-      onPressed: null,
+      onPressed: () {
+        switchToOnlineMode();
+      },
     );
 
     return Scaffold(

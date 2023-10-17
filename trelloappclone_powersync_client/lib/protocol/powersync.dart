@@ -145,6 +145,7 @@ class PowerSyncClient {
   static final PowerSyncClient _instance = PowerSyncClient._();
 
   bool _isInitialized = false;
+  bool _offlineMode = false;
 
   late final PowerSyncDatabase _db;
 
@@ -152,8 +153,9 @@ class PowerSyncClient {
     return _instance;
   }
 
-  Future<void> initialize() async {
+  Future<void> initialize({bool offlineMode = false}) async {
     if (!_isInitialized) {
+      _offlineMode = offlineMode;
       await dotenv.load(fileName: '.env');
       await _openDatabase();
       _isInitialized = true;
@@ -195,7 +197,7 @@ class PowerSyncClient {
 
     await _loadSupabase();
 
-    if (isLoggedIn()) {
+    if (isLoggedIn() && !_offlineMode) {
       // If the user is already logged in, connect immediately.
       // Otherwise, connect once logged in.
       _db.connect(connector: SupabaseConnector(_db));
@@ -211,6 +213,24 @@ class PowerSyncClient {
         await _db.disconnect();
       }
     });
+  }
+
+  bool isOfflineMode() {
+    return _offlineMode;
+  }
+
+  Future<void> switchToOfflineMode() async {
+    log.info('Switching to Offline mode');
+    _offlineMode = true;
+    await _db.disconnect();
+  }
+
+  Future<void> switchToOnlineMode() async {
+    log.info('Switching to Online mode');
+    _offlineMode = false;
+    if (isLoggedIn()) {
+      _db.connect(connector: SupabaseConnector(_db));
+    }
   }
 
   Future<TrelloUser>  signupWithEmail(String name, String email, String password) async {

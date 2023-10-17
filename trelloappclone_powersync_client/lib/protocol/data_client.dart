@@ -507,6 +507,14 @@ class _UserRepository extends _Repository {
     }
   }
 
+  /// We excpect only one record in the local trellouser table
+  /// if somebody has logged in and not logged out again
+  Future<TrelloUser?> getUser() async {
+    final results = await client.getDBExecutor().execute('''
+          SELECT * FROM trellouser''');
+    return results.map((row) => TrelloUser.fromRow(row)).firstOrNull;
+  }
+
   Future<TrelloUser?> getUserById({required String userId}) async {
     final results = await client.getDBExecutor().execute('''
           SELECT * FROM trellouser WHERE id = ?
@@ -707,6 +715,14 @@ class DataClient {
 
   Stream<SyncStatus> getStatusStream() {
     return _powerSyncClient.statusStream;
+  }
+
+  Future<void> switchToOfflineMode() async {
+    await _powerSyncClient.switchToOfflineMode();
+  }
+
+  Future<void> switchToOnlineMode() async {
+    await _powerSyncClient.switchToOnlineMode();
   }
 
 }
