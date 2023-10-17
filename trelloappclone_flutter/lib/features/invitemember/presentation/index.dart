@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:status_alert/status_alert.dart';
 import 'package:trelloappclone_flutter/utils/color.dart';
+import 'package:trelloappclone_flutter/utils/service.dart';
+import 'package:trelloappclone_powersync_client/models/models.dart';
+
+import '../../../main.dart';
 
 class InviteMember extends StatefulWidget {
   const InviteMember({super.key});
@@ -8,7 +13,17 @@ class InviteMember extends StatefulWidget {
   State<InviteMember> createState() => _InviteMemberState();
 }
 
-class _InviteMemberState extends State<InviteMember> {
+class _InviteMemberState extends State<InviteMember> with Service {
+  final TextEditingController emailcontroller = TextEditingController();
+  final List<Member> _currentMembers = [];
+
+
+  @override
+  void initState() {
+    super.initState();
+    _currentMembers.addAll(trello.selectedWorkspace.members ?? []);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,93 +34,109 @@ class _InviteMemberState extends State<InviteMember> {
           },
           icon: const Icon(Icons.close, size: 30),
         ),
-        title: const Text("Invite to Board 1"),
+        title: Text("Invite to ${trello.selectedWorkspace.name}"),
         centerTitle: false,
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.contacts))
-        ],
+        // actions: [
+        //   IconButton(onPressed: () {}, icon: const Icon(Icons.contacts))
+        // ],
       ),
-      body: const SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.only(bottom: 8.0),
+                padding: const EdgeInsets.only(bottom: 8.0),
                 child: TextField(
-                  decoration: InputDecoration(
-                      hintText: "Name, Email, Username",
-                      prefix: Icon(Icons.search)),
+                  controller: emailcontroller,
+                  textCapitalization: TextCapitalization.none,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                      hintText: "Email"),
                 ),
               ),
               Card(
                 child: ListTile(
                   textColor: brandColor,
-                  title: Text("Create board invite link"),
-                  subtitle: Text("Anyone with a link can join the board"),
-                  trailing: Icon(
+                  title: const Text("Add Existing User"),
+                  subtitle: const Text("Add user with email to board"),
+                  trailing: IconButton(
+                    icon: const Icon(
                     Icons.add_circle_outline,
                     color: brandColor,
+                  ), onPressed: () {
+                    inviteUserToWorkspace(emailcontroller.text, trello.selectedWorkspace).then((succeeded) {
+                      if (succeeded){
+                        setState(() {
+                          _currentMembers.clear();
+                          _currentMembers.addAll(trello.selectedWorkspace.members ?? []);
+                        });
+                        StatusAlert.show(context,
+                            duration: const Duration(seconds: 3),
+                            title: 'Added Member',
+                            subtitle: '${emailcontroller.text} added to workspace.',
+                            configuration:
+                            const IconConfiguration(icon: Icons.check, color: brandColor),
+                            maxWidth: 260);
+                      } else {
+                        StatusAlert.show(context,
+                            duration: const Duration(seconds: 3),
+                            title: 'Add Failed',
+                            subtitle: '${emailcontroller.text} not an existing user.',
+                            configuration:
+                            const IconConfiguration(icon: Icons.error_outline, color: brandColor),
+                            maxWidth: 260);
+                      }
+                    });
+                  },
                   ),
                 ),
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.only(top: 18.0, bottom: 18),
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "Board member (1)",
+                    "Current Board Members",
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
-              ListTile(
-                leading: CircleAvatar(),
-                title: Text("Jane Doe"),
-                subtitle: Text("@janedoe"),
-                trailing: Text("Admin"),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 28.0, bottom: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Color(0xffADD8E6),
-                    ),
-                    SizedBox(
-                      width: 5.0,
-                    ),
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Color(0xff89CFF0),
-                    ),
-                    SizedBox(
-                      width: 5.0,
-                    ),
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Color(0xff0000FF),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(bottom: 8.0),
-                child: Text(
-                  "Work together on a board",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-              ),
-              Text(
-                "Use the search bar or invite link to share this board with others",
-                textAlign: TextAlign.center,
-              )
+              _buildMembersList(),
+              // Padding(
+              //   padding: EdgeInsets.only(bottom: 8.0),
+              //   child: Text(
+              //     "Work together on a board",
+              //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              //   ),
+              // ),
+              // Text(
+              //   "Use the search bar or invite link to share this board with others",
+              //   textAlign: TextAlign.center,
+              // )
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildMembersList(){
+    List<Widget> memberTiles = [];
+    trello.selectedWorkspace.members?.forEach((member) {
+      memberTiles.add(
+          ListTile(
+            leading: CircleAvatar(
+              backgroundColor: brandColor,
+              child: Text(member.name[0].toUpperCase()),
+            ),
+            title: Text("${member.name}"),
+            trailing: const Text("Admin"),
+          )
+      );
+    });
+    return Column(
+      children: memberTiles,
     );
   }
 }

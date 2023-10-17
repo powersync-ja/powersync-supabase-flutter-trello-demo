@@ -230,6 +230,22 @@ mixin Service {
     return usrs;
   }
 
+  Future<bool> inviteUserToWorkspace(String email, Workspace workspace) async {
+    TrelloUser? user = await dataClient.user.checkUserExists(email);
+    if (user != null) {
+      Member member = Member(
+          id: randomUuid(),
+          workspaceId: workspace.id,
+          userId: user.id,
+          name: user.name ?? user.email,
+          role: "Admin");
+      await dataClient.member.addMember(member);
+      workspace.members?.add(member);
+      return true;
+    }
+    return false;
+  }
+
   //remove Member from Workspace
   Future<Workspace> removeMemberFromWorkspace(
       Member mmbr, Workspace wkspc) async {

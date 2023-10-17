@@ -1,9 +1,8 @@
 bucket_definitions:
   user_info:
-    # this allows syncing of trellouser record for logged-in user
-    parameters: SELECT id as user_id FROM trellouser WHERE trellouser.id = token_parameters.user_id
+    # this allows syncing of all trellouser records so we can lookup users when adding members
     data:
-      - SELECT * FROM trellouser WHERE trellouser.id = bucket.user_id
+      - SELECT * FROM trellouser
   by_workspace:
     # the entities are filtered by workspaceId, thus linked to the workspaces (a) owned by this user, (b) where this user is a member, or (c) which are public
     # Note: the quotes for "workspaceId" and "userId" is important, since otherwise postgres does not deal well with non-lowercase identifiers
