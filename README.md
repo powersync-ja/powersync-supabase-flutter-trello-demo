@@ -146,15 +146,14 @@ Also have a look at `trelloappclone_flutter/lib/utils/service.dart` for the acce
 
 Let's explore how we can use PowerSync Sync Rules to enforce these permissions and access patterns.
 
-First we want to sync the relevant `trellouser` record for the logged-in user, based on the user identifier:
+First we want to sync the relevant `trellouser` records synced to the local database. To enable lookups of users for adding as members to workspaces, we currently sync all user records. For a production app, we would ideally work via an API to invite members, and not worry about direct data lookups on the app side. 
 
 ```yaml
 bucket_definitions:
   user_info:
-    # this allows syncing of trellouser record for logged-in user
-    parameters: SELECT id as user_id FROM trellouser WHERE trellouser.id = token_parameters.user_id
+    # this allows syncing of all trellouser records so we can lookup users when adding members
     data:
-      - SELECT * FROM trellouser WHERE trellouser.id = bucket.user_id
+      - SELECT * FROM trellouser
 ```
 
 Then we want to look up all the workspaces (a) owned by this user, (b) where this user is a member, or (c) which are public.
