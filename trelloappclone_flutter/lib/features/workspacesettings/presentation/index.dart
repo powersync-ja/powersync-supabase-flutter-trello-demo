@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trelloappclone_flutter/utils/color.dart';
 
+import '../../../main.dart';
 import '../../visibility/presentation/index.dart';
 
 class WorkspaceSettings extends StatefulWidget {
@@ -15,7 +16,7 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
 
   @override
   Widget build(BuildContext context) {
-    nameController.text = "Workspace 1";
+    nameController.text = trello.selectedWorkspace.name;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Workspace settings"),

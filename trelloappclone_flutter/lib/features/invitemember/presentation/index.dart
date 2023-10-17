@@ -17,7 +17,6 @@ class _InviteMemberState extends State<InviteMember> with Service {
   final TextEditingController emailcontroller = TextEditingController();
   final List<Member> _currentMembers = [];
 
-
   @override
   void initState() {
     super.initState();
@@ -59,7 +58,7 @@ class _InviteMemberState extends State<InviteMember> with Service {
                 child: ListTile(
                   textColor: brandColor,
                   title: const Text("Add Existing User"),
-                  subtitle: const Text("Add user with email to board"),
+                  subtitle: const Text("Add user with email to workspace."),
                   trailing: IconButton(
                     icon: const Icon(
                     Icons.add_circle_outline,
@@ -123,18 +122,18 @@ class _InviteMemberState extends State<InviteMember> with Service {
 
   Widget _buildMembersList(){
     List<Widget> memberTiles = [];
-    trello.selectedWorkspace.members?.forEach((member) {
+    for (var member in _currentMembers) {
       memberTiles.add(
           ListTile(
             leading: CircleAvatar(
               backgroundColor: brandColor,
               child: Text(member.name[0].toUpperCase()),
             ),
-            title: Text("${member.name}"),
+            title: Text(member.name),
             trailing: const Text("Admin"),
           )
       );
-    });
+    }
     return Column(
       children: memberTiles,
     );
