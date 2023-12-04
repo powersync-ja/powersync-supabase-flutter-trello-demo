@@ -113,11 +113,15 @@ class _HomeState extends State<Home> with Service {
             );
           }),
       floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: ExpandableFab(
+      floatingActionButton:
+      ExpandableFab(
+          openButtonBuilder: RotateFloatingActionButtonBuilder(
+            child: const Icon(Icons.add),
+            fabSize: ExpandableFabSize.regular,
+            backgroundColor: Colors.green[400],
+            shape: const CircleBorder(),
+          ),
           type: ExpandableFabType.up,
-          backgroundColor: Colors.green[400],
-          expandedFabSize: ExpandableFabSize.regular,
-          child: const Icon(Icons.add),
           children: const [
             CustomFloatingAction("Workspace", Icons.book, '/createworkspace'),
             CustomFloatingAction("Board", Icons.book, '/createboard'),
