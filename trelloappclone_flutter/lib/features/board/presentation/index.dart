@@ -1,12 +1,12 @@
-import 'package:boardview/board_item.dart';
-import 'package:boardview/board_list.dart';
-import 'package:boardview/boardview.dart';
-import 'package:boardview/boardview_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:status_alert/status_alert.dart';
 import 'package:trelloappclone_flutter/features/carddetails/domain/card_detail_arguments.dart';
 import 'package:trelloappclone_flutter/features/carddetails/presentation/index.dart';
 import 'package:trelloappclone_flutter/utils/color.dart';
+import 'package:trelloappclone_flutter/widgets/thirdparty/board_item.dart';
+import 'package:trelloappclone_flutter/widgets/thirdparty/board_list.dart';
+import 'package:trelloappclone_flutter/widgets/thirdparty/boardview.dart';
+import 'package:trelloappclone_flutter/widgets/thirdparty/boardview_controller.dart';
 import 'package:trelloappclone_powersync_client/trelloappclone_powersync_client.dart';
 
 import '../../../main.dart';
