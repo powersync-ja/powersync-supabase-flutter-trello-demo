@@ -75,6 +75,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Trello App Clone',
       theme: ThemeData(
         textTheme: Theme.of(context).textTheme.apply(
@@ -110,8 +111,7 @@ class MyApp extends StatelessWidget {
         '/settings': (context) => const Settings(),
         SignToTrello.routeName: (context) => const SignToTrello(),
         '/workspace': (context) => const WorkspaceScreen()
-      },
-      debugShowCheckedModeBanner: false,
+      }
     );
   }
 }
