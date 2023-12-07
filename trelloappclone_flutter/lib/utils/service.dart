@@ -306,6 +306,16 @@ mixin Service {
         description: "${trello.user.name} updated the card ${crd.name}");
   }
 
+  //delete card
+  Future<void> deleteCard(Cardlist crd) async {
+    await dataClient.card.deleteCard(crd);
+
+    createActivity(
+        card: crd.id,
+        workspaceId: crd.workspaceId,
+        description: "${trello.user.name} deleted the card ${crd.name}");
+  }
+
   Future<int> archiveCardsInList(Listboard list) async {
     return dataClient.listboard.archiveCardsInList(list);
   }
