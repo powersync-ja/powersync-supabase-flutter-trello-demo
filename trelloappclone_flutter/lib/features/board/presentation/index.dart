@@ -87,7 +87,7 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                                 boardId: args.board.id,
                                 userId: trello.user.id,
                                 name: nameController.text,
-                            order: trello.lstbrd.length));
+                                order: trello.lstbrd.length));
                             nameController.clear();
                             setState(() {
                               show = false;
@@ -98,9 +98,10 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                                 workspaceId: args.workspace.id,
                                 listId: trello.lstbrd[selectedList].id,
                                 userId: trello.user.id,
-                                name: textEditingControllers[selectedList]!
-                                    .text,
-                                rank: trello.lstbrd[selectedList].cards!.length));
+                                name:
+                                    textEditingControllers[selectedList]!.text,
+                                rank:
+                                    trello.lstbrd[selectedList].cards!.length));
                             textEditingControllers[selectedList]!.clear();
                             setState(() {
                               showCard = false;
@@ -117,7 +118,6 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                   stream: getListsByBoardStream(args.board),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<Listboard>> snapshot) {
-
                     if (snapshot.hasData) {
                       List<Listboard> listBoards =
                           snapshot.data as List<Listboard>;
@@ -136,31 +136,41 @@ class _BoardScreenState extends State<BoardScreen> with Service {
     return BoardItem(
         onStartDragItem: (listIndex, itemIndex, state) {},
         onDropItem: (listIndex, itemIndex, oldListIndex, oldItemIndex, state) {
-          var item = data[oldListIndex!].items![oldItemIndex!];
-          data[oldListIndex].items!.removeAt(oldItemIndex);
+          // if listIndex is null, then item was dropped outside of list reset the state
+          if (listIndex == null) {
+            return;
+          }
 
-          //update new destination item rankings for cards >=  itemIndex
-          trello.lstbrd[listIndex!].cards!.where((card) => card.rank >= itemIndex!).forEach((card) {
-            card.rank += 1;
+          if (itemIndex == null || itemIndex > data[listIndex].items!.length) {
+            return;
+          }
+
+          // Move item to new list
+          var item = data[oldListIndex!].items?[oldItemIndex!];
+          data[oldListIndex].items!.removeAt(oldItemIndex!);
+          data[listIndex].items!.insert(itemIndex, item!);
+
+          var card = trello.lstbrd[oldListIndex].cards![oldItemIndex];
+
+          // update card listId
+          card.listId = trello.lstbrd[listIndex].id;
+          updateCard(card);
+
+          trello.lstbrd[oldListIndex].cards!.removeAt(oldItemIndex);
+          trello.lstbrd[listIndex].cards!.insert(itemIndex, card);
+
+          // reset rank based on index
+          trello.lstbrd[listIndex].cards!.asMap().forEach((index, card) {
+            card.rank = index;
             updateCard(card);
           });
-
-          //now add new card
-          data[listIndex].items!.insert(itemIndex!, item);
-          trello.lstbrd[oldListIndex].cards![oldItemIndex].rank = itemIndex;
-          updateCard(Cardlist(
-              id: trello.lstbrd[oldListIndex].cards![oldItemIndex].id,
-              workspaceId: trello.selectedWorkspace.id,
-              listId: trello.lstbrd[listIndex].id,
-              userId: trello.user.id,
-              name: item.title!,
-              rank: itemIndex));
         },
         onTapItem: (listIndex, itemIndex, state) {
           Navigator.pushNamed(context, CardDetails.routeName,
               arguments: CardDetailArguments(
-                  trello.lstbrd[selectedList].cards![itemIndex!],
+                  trello.lstbrd[listIndex].cards![itemIndex],
                   trello.selectedBoard,
+                  trello.lstbrd[listIndex]));
                   trello.lstbrd[selectedList])).then((value) => 
                     setState(() {}));
         },
@@ -234,10 +244,22 @@ class _BoardScreenState extends State<BoardScreen> with Service {
       onStartDragList: (listIndex) {},
       onTapList: (listIndex) async {},
       onDropList: (listIndex, oldListIndex) {
-        var list = data[oldListIndex!];
+        var tmpList = data[oldListIndex!];
+
         data.removeAt(oldListIndex);
-        data.insert(listIndex!, list);
-        updateListOrder(list.listId!, listIndex);
+        data.insert(listIndex!, tmpList);
+
+        updateListOrder(tmpList.listId!, listIndex);
+
+        var movedList = trello.lstbrd[oldListIndex];
+
+        trello.lstbrd.removeAt(oldListIndex);
+        trello.lstbrd.insert(listIndex, movedList);
+
+        // reset rank based on index
+        trello.lstbrd.asMap().forEach((index, list) {
+          updateListOrder(list.id, index);
+        });
       },
       headerBackgroundColor: brandColor,
       backgroundColor: brandColor,
@@ -307,12 +329,15 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                               child: ListTile(
                                 title: Text(listMenu[6]),
                                 onTap: () {
-                                  archiveCardsInList(trello.lstbrd[index]).then((numCardsArchived) {
+                                  archiveCardsInList(trello.lstbrd[index])
+                                      .then((numCardsArchived) {
                                     StatusAlert.show(context,
                                         duration: const Duration(seconds: 2),
-                                        title: '$numCardsArchived Cards Archived',
-                                        configuration:
-                                        const IconConfiguration(icon: Icons.archive_outlined, color: brandColor),
+                                        title:
+                                            '$numCardsArchived Cards Archived',
+                                        configuration: const IconConfiguration(
+                                            icon: Icons.archive_outlined,
+                                            color: brandColor),
                                         maxWidth: 260);
                                     Navigator.of(context).pop();
                                   });
@@ -332,16 +357,14 @@ class _BoardScreenState extends State<BoardScreen> with Service {
     );
   }
 
-  List<BoardListObject> generateBoardListObject(
-      List<Listboard> lists) {
+  List<BoardListObject> generateBoardListObject(List<Listboard> lists) {
     final List<BoardListObject> listData = [];
 
     for (int i = 0; i < lists.length; i++) {
       listData.add(BoardListObject(
-                  title: lists[i].name,
-                  listId: lists[i].id,
-                  items: generateBoardItemObject(lists[i].cards!))
-        );
+          title: lists[i].name,
+          listId: lists[i].id,
+          items: generateBoardItemObject(lists[i].cards!)));
     }
 
     return listData;

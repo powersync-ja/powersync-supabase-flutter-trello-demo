@@ -21,7 +21,7 @@ class Cardlist {
 
   final String workspaceId;
 
-  final String listId;
+  String listId;
 
   final String userId;
 
