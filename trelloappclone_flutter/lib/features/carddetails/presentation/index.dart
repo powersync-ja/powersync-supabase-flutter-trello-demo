@@ -185,6 +185,9 @@ class _CardDetailsState extends State<CardDetails> with Service {
               leading: const Icon(Icons.short_text),
               title: TextField(
                 controller: descriptionController,
+                keyboardType: TextInputType.multiline,
+                minLines: 1,
+                maxLines: 1024,
                 onTap: () {
                   setState(() {
                     addCardDescription = true;

@@ -298,9 +298,9 @@ class BoardViewState extends State<BoardView> with AutomaticKeepAliveClientMixin
 
   @override
   Widget build(BuildContext context) {
-    print("dy:${dy}");
-    print("topListY:${topListY}");
-    print("bottomListY:${bottomListY}");
+    // print("dy:${dy}");
+    // print("topListY:${topListY}");
+    // print("bottomListY:${bottomListY}");
     if(boardViewController.hasClients) {
       WidgetsBinding.instance!.addPostFrameCallback((Duration duration) {
         try {
@@ -320,6 +320,12 @@ class BoardViewState extends State<BoardView> with AutomaticKeepAliveClientMixin
       scrollDirection: Axis.horizontal,
       controller: boardViewController,
       itemBuilder: (BuildContext context, int index) {
+        // if index does not exist on lists
+        if (widget.lists!.length <= index) {
+          print('Returned empty container');
+          return Container();
+        }
+        
         if (widget.lists![index].boardView == null) {
           widget.lists![index] = BoardList(
             items: widget.lists![index].items,
@@ -490,7 +496,7 @@ class BoardViewState extends State<BoardView> with AutomaticKeepAliveClientMixin
           if (dy! > tempBottom! - 70) {
             //scroll down
 
-            if (listStates[draggedListIndex!].boardListController != null &&
+            if (listStates.length < draggedListIndex! && listStates[draggedListIndex!].boardListController != null &&
                 listStates[draggedListIndex!].boardListController.hasClients) {
               isScrolling = true;
               double pos = listStates[draggedListIndex!].boardListController.position.pixels;
@@ -499,8 +505,7 @@ class BoardViewState extends State<BoardView> with AutomaticKeepAliveClientMixin
                   duration: new Duration(milliseconds: 10),
                   curve: Curves.ease).whenComplete((){
                 pos -= listStates[draggedListIndex!].boardListController.position.pixels;
-                if(initialY == null)
-                  initialY = 0;
+                initialY ??= 0;
 //                if(widget.boardViewController != null) {
 //                  initialY -= pos;
 //                }
@@ -607,6 +612,7 @@ class BoardViewState extends State<BoardView> with AutomaticKeepAliveClientMixin
             },
             onPointerUp: (opu) {
               if (onDropItem != null) {
+                print("DROPPPED!");
                 int? tempDraggedItemIndex = draggedItemIndex;
                 int? tempDraggedListIndex = draggedListIndex;
                 int? startDraggedItemIndex = startItemIndex;
