@@ -222,6 +222,13 @@ class _CardlistRepository extends _Repository {
     return true;
   }
 
+  Future<bool> deleteCard(Cardlist cardlist) async {
+    await client
+        .getDBExecutor()
+        .execute('DELETE FROM card WHERE id = ?', [cardlist.id]);
+    return true;
+  }
+
   Future<List<Cardlist>> getCardsforList(String listId) async {
     final results = await client.getDBExecutor().execute('''
           SELECT * FROM card WHERE listId = ? AND archived = 0 ORDER BY rank ASC

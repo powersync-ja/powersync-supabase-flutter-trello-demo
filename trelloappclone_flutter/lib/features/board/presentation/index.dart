@@ -67,7 +67,11 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                   leading: IconButton(
                       onPressed: () {
                         setState(() {
-                          (show) ? show = false : showCard = false;
+                          nameController.clear();
+                          textEditingControllers[selectedList]!.clear();
+                          show = false; 
+                          showCard = false;
+                          showtheCard[selectedCard] = false;
                         });
                       },
                       icon: const Icon(Icons.close)),
@@ -98,6 +102,7 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                                     textEditingControllers[selectedList]!.text,
                                 rank:
                                     trello.lstbrd[selectedList].cards!.length));
+                            textEditingControllers[selectedList]!.clear();
                             setState(() {
                               showCard = false;
                               showtheCard[selectedCard] = false;
@@ -166,6 +171,8 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                   trello.lstbrd[listIndex].cards![itemIndex],
                   trello.selectedBoard,
                   trello.lstbrd[listIndex]));
+                  trello.lstbrd[selectedList])).then((value) => 
+                    setState(() {}));
         },
         item: Card(
           child: Padding(

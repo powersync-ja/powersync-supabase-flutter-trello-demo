@@ -100,10 +100,52 @@ class _CardDetailsState extends State<CardDetails> with Service {
                 icon: const Icon(Icons.close, size: 30),
               ),
               actions: [
-                  IconButton(
-                    icon: const Icon(Icons.more_vert),
-                    onPressed: () {},
+                  PopupMenuButton<Text>(
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem(
+                          onTap: () => WidgetsBinding?.instance
+                              ?.addPostFrameCallback((_) {
+                            showDialog<String>(
+                                context: context,
+                                builder: (BuildContext context) => AlertDialog(
+                                      title: const Text('Delete Card'),
+                                      content:
+                                          const Text('Are you sure you want to delete this card?'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, 'Cancel'),
+                                          child: const Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () => {
+                                              deleteCard(args.crd),
+                                              // Remove popup
+                                              Navigator.pop(context, 'Delete'),                                              
+                                              // Go one view back
+                                              Navigator.pop(context, 'Delete'),
+                                          },
+                                          child: const Text('Delete'),
+                                        ),
+                                      ],
+                                    ));
+                          }),
+                          value: const Text("Delete Card"),
+                          child: const ListTile(
+                            leading: Icon(Icons.delete),
+                            title: Text(
+                              "Delete Card",
+                            ),
+                          ),
+                        ),
+                      ];
+                    },
                   )
+                  // IconButton(
+                  //   icon: const Icon(Icons.more_vert),
+                  //   onPressed: () {},
+                  // )
                 ]),
       body: SingleChildScrollView(
         child: Padding(
