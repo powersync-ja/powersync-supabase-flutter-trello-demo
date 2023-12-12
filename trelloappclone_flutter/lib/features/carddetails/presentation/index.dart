@@ -19,9 +19,11 @@ class CardDetails extends StatefulWidget {
 
 class _CardDetailsState extends State<CardDetails> with Service {
   final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController checklistController = TextEditingController();
   bool showChecklist = false;
   bool addCardDescription = false;
+  bool editCardName = false;
   Map<int, bool> checked = {};
 
   @override
@@ -30,20 +32,32 @@ class _CardDetailsState extends State<CardDetails> with Service {
         ModalRoute.of(context)!.settings.arguments as CardDetailArguments;
 
     descriptionController.text = args.crd.description ?? " ";
+    nameController.text = args.crd.name ?? " ";
 
     return Scaffold(
-      appBar: (showChecklist || addCardDescription)
+      appBar: (showChecklist || addCardDescription || editCardName)
           ? AppBar(
               leading: IconButton(
                 onPressed: () {
                   setState(() {
                     showChecklist = false;
                     addCardDescription = false;
+                    editCardName = false;
                   });
                 },
                 icon: const Icon(Icons.close, size: 30),
               ),
-              title: const Text("Description"),
+              title: Text(() {
+                if (showChecklist) {
+                  return "Add Checklist";
+                } else if (addCardDescription) {
+                  return "Add card description";
+                } else if (editCardName) {
+                  return "Edit card name";
+                } else {
+                  return "";
+                }
+              }()),
               actions: [
                   IconButton(
                     icon: const Icon(Icons.check),
@@ -59,11 +73,21 @@ class _CardDetailsState extends State<CardDetails> with Service {
                         setState(() {
                           showChecklist = false;
                         });
-                      } else if (addCardDescription) {
-                        if (descriptionController.text.isNotEmpty) {
+                      } else if (addCardDescription || editCardName) {
+                        if (addCardDescription &&
+                            descriptionController.text.isNotEmpty) {
                           args.crd.description = descriptionController.text;
-                          updateCard(args.crd);
                         }
+
+                        if (editCardName && nameController.text.isNotEmpty) {
+                          args.crd.name = nameController.text;
+                        }
+
+                        updateCard(args.crd);
+                        descriptionController.clear();
+                        setState(() {
+                          addCardDescription = false;
+                        });
                       }
                     },
                   )
@@ -128,9 +152,21 @@ class _CardDetailsState extends State<CardDetails> with Service {
           padding: const EdgeInsets.all(10.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              args.crd.name,
-              style: const TextStyle(fontSize: 20),
+            ListTile(
+              title: TextField(
+                style: const TextStyle(
+                  fontSize: 20.0, // Set your desired font size here
+                ),
+                controller: nameController,
+                onTap: () {
+                  setState(() {
+                    editCardName = true;
+                  });
+                },
+                decoration: const InputDecoration(
+                  hintText: "Edit card name"
+                ),
+              ),
             ),
             RichText(
                 text: TextSpan(

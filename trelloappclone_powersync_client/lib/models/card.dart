@@ -25,7 +25,7 @@ class Cardlist {
 
   final String userId;
 
-  final String name;
+  String name;
 
   String? description;
 
