@@ -170,8 +170,7 @@ class _BoardScreenState extends State<BoardScreen> with Service {
               arguments: CardDetailArguments(
                   trello.lstbrd[listIndex].cards![itemIndex],
                   trello.selectedBoard,
-                  trello.lstbrd[listIndex]));
-                  trello.lstbrd[selectedList])).then((value) => 
+                  trello.lstbrd[listIndex])).then((value) => 
                     setState(() {}));
         },
         item: Card(

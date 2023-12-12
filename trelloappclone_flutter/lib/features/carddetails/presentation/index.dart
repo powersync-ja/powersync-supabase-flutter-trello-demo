@@ -85,8 +85,10 @@ class _CardDetailsState extends State<CardDetails> with Service {
 
                         updateCard(args.crd);
                         descriptionController.clear();
+                        nameController.clear();
                         setState(() {
                           addCardDescription = false;
+                          editCardName = false;
                         });
                       }
                     },
