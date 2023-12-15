@@ -1,6 +1,7 @@
 library powersync_client;
 
 import 'package:powersync/powersync.dart';
+import 'package:sqlite3/src/result_set.dart';
 
 import "../models/models.dart";
 import 'powersync.dart';
@@ -247,8 +248,8 @@ class _CheckListRepository extends _Repository {
   ''';
 
   Future<Checklist> createChecklist(Checklist checklist) async {
-    final results = await client.getDBExecutor().execute(
-        '$insertQuery RETURNING *', [
+    final results =
+        await client.getDBExecutor().execute('$insertQuery RETURNING *', [
       checklist.id,
       checklist.workspaceId,
       checklist.cardId,
@@ -313,9 +314,14 @@ class _CommentRepository extends _Repository {
   ''';
 
   Future<Comment> createComment(Comment comment) async {
-    final results = await client.getDBExecutor().execute(
-        '$insertQuery RETURNING *',
-        [comment.id, comment.workspaceId, comment.cardId, comment.userId, comment.description]);
+    final results =
+        await client.getDBExecutor().execute('$insertQuery RETURNING *', [
+      comment.id,
+      comment.workspaceId,
+      comment.cardId,
+      comment.userId,
+      comment.description
+    ]);
     if (results.isEmpty) {
       throw Exception("Failed to add Comment");
     } else {
@@ -351,6 +357,11 @@ class _ListboardRepository extends _Repository {
     for (Listboard list in lists) {
       List<Cardlist> cards = await client.card.getCardsforList(list.id);
       list.cards = cards;
+
+      for (Cardlist card in list.cards!) {
+        List<CardLabel> labels = await client.cardLabel.getCardLabels(card);
+        card.cardLabels = labels;
+      }
     }
 
     return lists;
@@ -362,12 +373,17 @@ class _ListboardRepository extends _Repository {
           SELECT * FROM listboard WHERE boardId = ? ORDER BY listOrder ASC
            ''', parameters: [boardId]).asyncMap((event) async {
       List<Listboard> lists =
-        event.map((row) => Listboard.fromRow(row)).toList();
+          event.map((row) => Listboard.fromRow(row)).toList();
 
       //then we set the cards for each listboard
       for (Listboard list in lists) {
         List<Cardlist> cards = await client.card.getCardsforList(list.id);
         list.cards = cards;
+
+        for (Cardlist card in list.cards!) {
+          List<CardLabel> labels = await client.cardLabel.getCardLabels(card);
+          card.cardLabels = labels;
+        }
       }
 
       return lists;
@@ -381,9 +397,16 @@ class _ListboardRepository extends _Repository {
   ''';
 
   Future<Listboard> createList(Listboard lst) async {
-    final results = await client.getDBExecutor().execute(
-        '$insertQuery RETURNING *',
-        [lst.id, lst.workspaceId, lst.boardId, lst.userId, lst.name, boolAsInt(lst.archived), lst.order]);
+    final results =
+        await client.getDBExecutor().execute('$insertQuery RETURNING *', [
+      lst.id,
+      lst.workspaceId,
+      lst.boardId,
+      lst.userId,
+      lst.name,
+      boolAsInt(lst.archived),
+      lst.order
+    ]);
     if (results.isEmpty) {
       throw Exception("Failed to add Listboard");
     } else {
@@ -398,8 +421,7 @@ class _ListboardRepository extends _Repository {
   ''';
 
   Future<void> updateListOrder(String listId, int newOrder) async {
-    await client.getDBExecutor().execute(updateQuery,
-        [newOrder, listId]);
+    await client.getDBExecutor().execute(updateQuery, [newOrder, listId]);
   }
 
   /// Archive cards in and return how many were archived
@@ -419,8 +441,7 @@ class _ListboardRepository extends _Repository {
           UPDATE card
                   SET archived = 1
                   WHERE id = ?
-          '''
-      , cards.map((card) => [card.id]).toList());
+          ''', cards.map((card) => [card.id]).toList());
 
       //touch listboard to trigger update via stream listeners on Listboard
       sqlContext.execute('''
@@ -578,14 +599,18 @@ class _WorkspaceRepository extends _Repository {
 
   Stream<List<Workspace>> watchWorkspacesByUser({required String userId}) {
     //First we get the workspaces
-    return client.getDBExecutor().watch('''
+    return client.getDBExecutor().watch(
+      '''
           SELECT * FROM workspace
-           ''', ).asyncMap((event) async {
-      List<Workspace> workspaces = event.map((row) => Workspace.fromRow(row)).toList();
+           ''',
+    ).asyncMap((event) async {
+      List<Workspace> workspaces =
+          event.map((row) => Workspace.fromRow(row)).toList();
 
       //Then we get the members for each workspace
       for (Workspace workspace in workspaces) {
-        List<Member> members = await client.member.getMembersByWorkspace(workspaceId: workspace.id);
+        List<Member> members = await client.member
+            .getMembersByWorkspace(workspaceId: workspace.id);
         workspace.members = members;
       }
       return workspaces;
@@ -608,15 +633,29 @@ class _WorkspaceRepository extends _Repository {
     final results = await client.getDBExecutor().execute('''
           SELECT * FROM board WHERE workspaceId = ?
            ''', [workspaceId]);
-    return results.map((row) => Board.fromRow(row)).toList();
+
+    List<Board> boards = results.map((row) => Board.fromRow(row)).toList();
+
+    for (Board board in boards) {
+      List<BoardLabel> labels = await client.boardLabel.getBoardLabels(board);
+      board.boardLabels = labels;
+    }
+
+    return boards;
   }
 
-  Stream<List<Board>> watchBoardsByWorkspace(
-      {required String workspaceId}) {
+  Stream<List<Board>> watchBoardsByWorkspace({required String workspaceId}) {
     return client.getDBExecutor().watch('''
           SELECT * FROM board WHERE workspaceId = ?
-           ''', parameters: [workspaceId]).map((event) {
-      return event.map((row) => Board.fromRow(row)).toList();
+           ''', parameters: [workspaceId]).asyncMap((event) async {
+      List<Board> boards = event.map((row) => Board.fromRow(row)).toList();
+
+      for (Board board in boards) {
+        List<BoardLabel> labels = await client.boardLabel.getBoardLabels(board);
+        board.boardLabels = labels;
+      }
+
+      return boards;
     });
   }
 
@@ -643,6 +682,83 @@ class _WorkspaceRepository extends _Repository {
   }
 }
 
+class _BoardLabelRepository extends _Repository {
+  _BoardLabelRepository(DataClient client) : super(client);
+
+  Future<BoardLabel> createBoardLabel(BoardLabel boardLabel) async {
+    final results = await client.getDBExecutor().execute('''INSERT INTO
+           board_label(id, boardId, workspaceId, title, color, dateCreated)
+           VALUES(?, ?, ?, ?, ?, datetime())
+           RETURNING *''', [
+      boardLabel.id,
+      boardLabel.boardId,
+      boardLabel.workspaceId,
+      boardLabel.title,
+      boardLabel.color
+    ]);
+    if (results.isEmpty) {
+      throw Exception("Failed to add BoardLabel");
+    } else {
+      return BoardLabel.fromRow(results.first);
+    }
+  }
+
+  Future<bool> updateBoardLabel(BoardLabel boardLabel) async {
+    await client.getDBExecutor().execute('''
+          UPDATE board_label
+          set title = ?1
+          WHERE id = ?2
+           ''', [
+      boardLabel.title,
+      boardLabel.id
+    ]);
+    return true;
+  }
+
+  Future<List<BoardLabel>> getBoardLabels(Board board) async {
+    final results = await client.getDBExecutor().execute('''
+          SELECT * FROM board_label WHERE boardId = ? ORDER BY dateCreated DESC
+           ''', [board.id]);
+    return results.map((row) => BoardLabel.fromRow(row)).toList();
+  }
+}
+
+class _CardLabelRepository extends _Repository {
+  _CardLabelRepository(DataClient client) : super(client);
+
+  Future<CardLabel> createCardLabel(CardLabel cardLabel) async {
+    final results = await client.getDBExecutor().execute('''INSERT INTO
+           card_label(id, cardId, boardId, workspaceId, boardLabelId, dateCreated)
+           VALUES(?, ?, ?, ?, ?, datetime())
+           RETURNING *''', [
+      cardLabel.id,
+      cardLabel.cardId,
+      cardLabel.boardId,
+      cardLabel.workspaceId,
+      cardLabel.boardLabelId,
+    ]);
+    if (results.isEmpty) {
+      throw Exception("Failed to add CardLabel");
+    } else {
+      return CardLabel.fromRow(results.first);
+    }
+  }
+
+  Future<bool> deleteCardLabel(BoardLabel boardLabel) async {
+    await client
+        .getDBExecutor()
+        .execute('DELETE FROM card_label WHERE boardLabelId = ?', [boardLabel.id]);
+    return true;
+  }
+
+  Future<List<CardLabel>> getCardLabels(Cardlist card) async {
+    final results = await client.getDBExecutor().execute('''
+          SELECT * FROM card_label WHERE cardId = ? ORDER BY dateCreated DESC
+           ''', [card.id]);
+    return results.map((row) => CardLabel.fromRow(row)).toList();
+  }
+}
+
 class DataClient {
   late final _ActivityRepository activity;
   late final _AttachmentRepository attachment;
@@ -654,6 +770,8 @@ class DataClient {
   late final _MemberRepository member;
   late final _UserRepository user;
   late final _WorkspaceRepository workspace;
+  late final _BoardLabelRepository boardLabel;
+  late final _CardLabelRepository cardLabel;
 
   late PowerSyncClient _powerSyncClient;
 
@@ -668,6 +786,8 @@ class DataClient {
     member = _MemberRepository(this);
     user = _UserRepository(this);
     workspace = _WorkspaceRepository(this);
+    boardLabel = _BoardLabelRepository(this);
+    cardLabel = _CardLabelRepository(this);
   }
 
   Future<void> initialize() async {
@@ -691,7 +811,8 @@ class DataClient {
     String? userId = _powerSyncClient.getUserId();
     if (userId != null) {
       return user.getUserById(userId: userId);
-    } else return null;
+    } else
+      return null;
   }
 
   Future<void> logOut() async {
@@ -703,14 +824,19 @@ class DataClient {
 
     TrelloUser? storedUser = await user.getUserById(userId: userId);
     if (storedUser == null) {
-      storedUser = await user.createUser(TrelloUser(id: userId, name: email.split('@')[0],email: email, password: password));
+      storedUser = await user.createUser(TrelloUser(
+          id: userId,
+          name: email.split('@')[0],
+          email: email,
+          password: password));
     }
     return storedUser;
   }
 
-  Future<TrelloUser> signupWithEmail(String name, String email, String password) async {
+  Future<TrelloUser> signupWithEmail(
+      String name, String email, String password) async {
     TrelloUser? storedUser = await user.checkUserExists(email);
-    if (storedUser != null){
+    if (storedUser != null) {
       throw new Exception('User for email already exists. Use Login instead.');
     }
     return _powerSyncClient.signupWithEmail(name, email, password);
@@ -731,5 +857,4 @@ class DataClient {
   Future<void> switchToOnlineMode() async {
     await _powerSyncClient.switchToOnlineMode();
   }
-
 }

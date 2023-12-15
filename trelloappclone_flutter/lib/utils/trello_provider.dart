@@ -25,6 +25,9 @@ class TrelloProvider extends ChangeNotifier {
   late Workspace _selectedWorkspace;
   Workspace get selectedWorkspace => _selectedWorkspace;
 
+  Cardlist? _selectedCard;
+  Cardlist? get selectedCard => _selectedCard;
+
   void setUser(TrelloUser user) {
     _user = user;
     notifyListeners();
@@ -57,6 +60,11 @@ class TrelloProvider extends ChangeNotifier {
 
   void setSelectedWorkspace(Workspace workspace) {
     _selectedWorkspace = workspace;
+    notifyListeners();
+  }
+
+  void setSelectedCard(Cardlist? card) {
+    _selectedCard = card;
     notifyListeners();
   }
 

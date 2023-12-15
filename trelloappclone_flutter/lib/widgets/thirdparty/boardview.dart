@@ -612,7 +612,6 @@ class BoardViewState extends State<BoardView> with AutomaticKeepAliveClientMixin
             },
             onPointerUp: (opu) {
               if (onDropItem != null) {
-                print("DROPPPED!");
                 int? tempDraggedItemIndex = draggedItemIndex;
                 int? tempDraggedListIndex = draggedListIndex;
                 int? startDraggedItemIndex = startItemIndex;

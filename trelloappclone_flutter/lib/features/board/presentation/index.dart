@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:status_alert/status_alert.dart';
 import 'package:trelloappclone_flutter/features/carddetails/domain/card_detail_arguments.dart';
@@ -12,6 +14,7 @@ import 'package:trelloappclone_powersync_client/trelloappclone_powersync_client.
 import '../../../main.dart';
 import '../../../utils/config.dart';
 import '../../../utils/service.dart';
+import '../../../utils/widgets.dart';
 import '../domain/board_arguments.dart';
 import 'boarditemobject.dart';
 import 'boardlistobject.dart';
@@ -69,7 +72,7 @@ class _BoardScreenState extends State<BoardScreen> with Service {
                         setState(() {
                           nameController.clear();
                           textEditingControllers[selectedList]!.clear();
-                          show = false; 
+                          show = false;
                           showCard = false;
                           showtheCard[selectedCard] = false;
                         });
@@ -167,18 +170,59 @@ class _BoardScreenState extends State<BoardScreen> with Service {
         },
         onTapItem: (listIndex, itemIndex, state) {
           Navigator.pushNamed(context, CardDetails.routeName,
-              arguments: CardDetailArguments(
-                  trello.lstbrd[listIndex].cards![itemIndex],
-                  trello.selectedBoard,
-                  trello.lstbrd[listIndex])).then((value) => 
-                    setState(() {}));
+                  arguments: CardDetailArguments(
+                      trello.lstbrd[listIndex].cards![itemIndex],
+                      trello.selectedBoard,
+                      trello.lstbrd[listIndex]))
+              .then((value) => setState(() {}));
         },
         item: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(itemObject.title!),
-          ),
-        ));
+            color: Colors.white,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Column(children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 8, 8, 8),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    itemObject.title!,
+                  ),
+                ),
+              ),
+              Wrap(
+                children: <Widget>[
+                  // Add a horizontal space
+                  const SizedBox(width: 0),
+                  // Example labels with colored Chips
+                  ...itemObject.cardLabels!.map((cardLabel) => Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 2), // Horizontal margin
+                      child: LabelDiplay(
+                          color: trello.selectedBoard.boardLabels!
+                              .firstWhere((boardLabel) =>
+                                  boardLabel.id == cardLabel.boardLabelId)
+                              .color,
+                          label: trello.selectedBoard.boardLabels!
+                              .firstWhere((boardLabel) =>
+                                  boardLabel.id == cardLabel.boardLabelId)
+                              .title))),
+                ],
+              ),
+              //Add icon to the column if card has description
+              if (itemObject.hasDescription!)
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(8, 2, 8, 8),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Icon(
+                      Icons.description,
+                      size: 16),
+                  ),
+                ),
+            ])));
   }
 
   Widget _createBoardList(
@@ -372,7 +416,10 @@ class _BoardScreenState extends State<BoardScreen> with Service {
   List<BoardItemObject> generateBoardItemObject(List<Cardlist> crds) {
     final List<BoardItemObject> items = [];
     for (int i = 0; i < crds.length; i++) {
-      items.add(BoardItemObject(title: crds[i].name));
+      items.add(BoardItemObject(
+          title: crds[i].name,
+          cardLabels: crds[i].cardLabels,
+          hasDescription: (crds[i].description != null) ? true : false));
     }
     return items;
   }

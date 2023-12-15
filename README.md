@@ -49,6 +49,8 @@ After creating the Supabase project, we still need to create the tables in the d
 * `models`
 * `trellouser`
 * `workspace`
+* `board_label`
+* `card_label`
 
 _(We give a brief overview of the app domain model later in this README.)_
 
@@ -63,7 +65,7 @@ PowerSync uses the Postgres [Write Ahead Log (WAL)](https://www.postgresql.org/d
 
 Run the below SQL statement in your Supabase SQL Editor:
 ```sql
-create publication powersync for table activity, attachment, board, card, checklist, comment, listboard, member, trellouser, workspace;
+create publication powersync for table activity, attachment, board, card, checklist, comment, listboard, member, trellouser, workspace, board_label, card_label;
 ```
 
 ## Configuring PowerSync
@@ -179,6 +181,8 @@ Then we want to look up all the workspaces (a) owned by this user, (b) where thi
       - SELECT * FROM activity WHERE activity."workspaceId" = bucket.workspace_id
       - SELECT * FROM comment WHERE comment."workspaceId" = bucket.workspace_id
       - SELECT * FROM attachment WHERE attachment."workspaceId" = bucket.workspace_id
+      - SELECT * FROM board_label WHERE board_label."workspaceId" = bucket.workspace_id
+      - SELECT * FROM card_label WHERE card_label."workspaceId" = bucket.workspace_id
 ```
 
 **To Configure the Improved Sync Rules, Follow These Steps:**

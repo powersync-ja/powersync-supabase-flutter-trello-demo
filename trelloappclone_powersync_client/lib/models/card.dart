@@ -1,4 +1,5 @@
 import 'package:powersync/sqlite3.dart' as sqlite;
+import 'package:trelloappclone_powersync_client/models/card_label.dart';
 
 class Cardlist {
   Cardlist({
@@ -15,6 +16,7 @@ class Cardlist {
     this.archived,
     this.checklist,
     this.comments,
+    this.cardLabels,
   });
 
   final String id;
@@ -43,6 +45,8 @@ class Cardlist {
 
   final bool? comments;
 
+  List<CardLabel>? cardLabels;
+
   factory Cardlist.fromRow(sqlite.Row row) {
     return Cardlist(
         id: row['id'],
@@ -57,6 +61,7 @@ class Cardlist {
         attachment: row['attachment'] == 1,
         archived: row['archived'] == 1,
         checklist: row['checklist'] == 1,
-        comments: row['comments'] == 1);
+        comments: row['comments'] == 1,
+        cardLabels: []);
   }
 }
