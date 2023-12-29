@@ -51,16 +51,6 @@ class BoardItemState extends State<BoardItem>
     if (widget.onDropItem != null) {
       // check if itemIndex == items.length
       // log everything
-      print("listIndex: $listIndex");
-      print("itemIndex: $itemIndex");
-      print(
-          "oldListIndex: ${widget.boardList!.widget.boardView!.startListIndex}");
-      print(
-          "oldItemIndex: ${widget.boardList!.widget.boardView!.startItemIndex}");
-
-      print("BitemIndex: $itemIndex");
-      print("Bitems.length: ${widget.boardList!.widget.items!.length}");
-
       widget.onDropItem!(
           listIndex,
           itemIndex,

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:trelloappclone_flutter/features/activity/presentation/index.dart';
 import 'package:trelloappclone_flutter/utils/color.dart';
 import 'package:trelloappclone_powersync_client/trelloappclone_powersync_client.dart';
+import 'package:trelloappclone_flutter/main.dart';
 
 import '../../../utils/service.dart';
+import '../../../utils/widgets.dart';
 import '../../editlabels/presentation/index.dart';
 import '../../viewmembers/presentation/index.dart';
 import '../domain/card_detail_arguments.dart';
@@ -31,6 +33,7 @@ class _CardDetailsState extends State<CardDetails> with Service {
     final args =
         ModalRoute.of(context)!.settings.arguments as CardDetailArguments;
 
+    trello.setSelectedCard(args.crd);
     descriptionController.text = args.crd.description ?? " ";
     nameController.text = args.crd.name ?? " ";
 
@@ -112,8 +115,8 @@ class _CardDetailsState extends State<CardDetails> with Service {
                                 context: context,
                                 builder: (BuildContext context) => AlertDialog(
                                       title: const Text('Delete Card'),
-                                      content:
-                                          const Text('Are you sure you want to delete this card?'),
+                                      content: const Text(
+                                          'Are you sure you want to delete this card?'),
                                       actions: <Widget>[
                                         TextButton(
                                           onPressed: () =>
@@ -122,11 +125,11 @@ class _CardDetailsState extends State<CardDetails> with Service {
                                         ),
                                         TextButton(
                                           onPressed: () => {
-                                              deleteCard(args.crd),
-                                              // Remove popup
-                                              Navigator.pop(context, 'Delete'),                                              
-                                              // Go one view back
-                                              Navigator.pop(context, 'Delete'),
+                                            deleteCard(args.crd),
+                                            // Remove popup
+                                            Navigator.pop(context, 'Delete'),
+                                            // Go one view back
+                                            Navigator.pop(context, 'Delete'),
                                           },
                                           child: const Text('Delete'),
                                         ),
@@ -165,9 +168,7 @@ class _CardDetailsState extends State<CardDetails> with Service {
                     editCardName = true;
                   });
                 },
-                decoration: const InputDecoration(
-                  hintText: "Edit card name"
-                ),
+                decoration: const InputDecoration(hintText: "Edit card name"),
               ),
             ),
             RichText(
@@ -243,13 +244,38 @@ class _CardDetailsState extends State<CardDetails> with Service {
             ),
             ListTile(
               leading: const Icon(Icons.label),
-              title: const Text("Labels"),
+              title: Row(
+                children: <Widget>[
+                  const Text("Labels"),
+                  // Add a horizontal space
+                  const SizedBox(width: 8),
+                  // Example labels with colored Chips
+                  ...trello.selectedCard!.cardLabels!.map(
+                    (cardLabel) => Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 4), // Horizontal margin
+                        child: LabelDiplay(
+                            color: trello.selectedBoard.boardLabels!
+                                .firstWhere((boardLabel) =>
+                                    boardLabel.id == cardLabel.boardLabelId)
+                                .color,
+                            label: trello.selectedBoard.boardLabels!
+                                .firstWhere((boardLabel) =>
+                                    boardLabel.id == cardLabel.boardLabelId)
+                                .title)),
+                  ),
+                ],
+              ),
               onTap: () {
-                showDialog(
+                final result = showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return const EditLabels();
+                      return EditLabels(cardId: args.crd.id);
                     });
+
+                result.then((value) {
+                  setState(() {});
+                });
               },
             ),
             ListTile(

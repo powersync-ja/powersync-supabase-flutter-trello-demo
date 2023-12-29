@@ -15,3 +15,5 @@ bucket_definitions:
       - SELECT * FROM comment
       - SELECT * FROM listboard
       - SELECT * FROM member
+      - SELECT * FROM board_label
+      - SELECT * FROM card_label

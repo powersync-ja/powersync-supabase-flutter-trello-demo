@@ -85,22 +85,22 @@ class _BoardSettingsState extends State<BoardSettings> {
             //         trailing: Switch(value: false, onChanged: ((value) {}))),
             //   ),
             // ),
-            Padding(
-              padding: const EdgeInsets.only(top: 3.0),
-              child: Container(
-                color: whiteShade,
-                child: ListTile(
-                  leading: const Text("Edit labels"),
-                  onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const EditLabels();
-                        });
-                  },
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.only(top: 3.0),
+            //   child: Container(
+            //     color: whiteShade,
+            //     child: ListTile(
+            //       leading: const Text("Edit labels"),
+            //       onTap: () {
+            //         showDialog(
+            //             context: context,
+            //             builder: (BuildContext context) {
+            //               return const EditLabels();
+            //             });
+            //       },
+            //     ),
+            //   ),
+            // ),
             // Padding(
             //   padding: const EdgeInsets.only(top: 3.0),
             //   child: Container(

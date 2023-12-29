@@ -1,4 +1,5 @@
 import 'package:powersync/sqlite3.dart' as sqlite;
+import 'package:trelloappclone_powersync_client/models/board_label.dart';
 
 class Board {
   Board({
@@ -20,6 +21,7 @@ class Board {
     this.pinned,
     this.selfJoin,
     this.close,
+    this.boardLabels
   });
 
   final String id;
@@ -58,6 +60,8 @@ class Board {
 
   final bool? close;
 
+  List<BoardLabel>? boardLabels;
+
   factory Board.fromRow(sqlite.Row row) {
     return Board(
         id: row['id'],
@@ -77,6 +81,7 @@ class Board {
         memberType: row['memberType'],
         pinned: row['pinned'] == 1,
         selfJoin: row['selfJoin'] == 1,
-        close: row['close'] == 1);
+        close: row['close'] == 1,
+        boardLabels: []);
   }
 }

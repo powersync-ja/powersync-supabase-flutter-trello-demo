@@ -23,3 +23,5 @@ bucket_definitions:
       - SELECT * FROM activity WHERE activity."workspaceId" = bucket.workspace_id
       - SELECT * FROM comment WHERE comment."workspaceId" = bucket.workspace_id
       - SELECT * FROM attachment WHERE attachment."workspaceId" = bucket.workspace_id
+      - SELECT * FROM board_label WHERE board_label."workspaceId" = bucket.workspace_id
+      - SELECT * FROM card_label WHERE card_label."workspaceId" = bucket.workspace_id
