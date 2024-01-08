@@ -125,5 +125,25 @@ const schema = Schema(([
     Column.text('visibility'),
   ], indexes: [
     Index('user', [IndexedColumn('userId')]),
+  ]),
+  // class: BoardLabel
+  Table('board_label', [
+    Column.text('boardId'),
+    Column.text('workspaceId'),
+    Column.text('title'),
+    Column.text('color'),
+    Column.text('dateCreated'),
+  ], indexes: [
+    Index('board', [IndexedColumn('boardId')]),
+  ]),
+  // class: CardLabel
+  Table('card_label', [
+    Column.text('cardId'),
+    Column.text('boardLabelId'),
+    Column.text('boardId'),
+    Column.text('workspaceId'),
+    Column.text('dateCreated'),
+  ], indexes: [
+    Index('card', [IndexedColumn('cardId')]),
   ])
 ]));

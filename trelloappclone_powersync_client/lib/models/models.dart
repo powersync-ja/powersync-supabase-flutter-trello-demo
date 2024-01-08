@@ -8,3 +8,5 @@ export 'listboard.dart';
 export 'member.dart';
 export 'user.dart';
 export 'workspace.dart';
+export 'board_label.dart';
+export 'card_label.dart';

@@ -20,7 +20,11 @@ mixin Service {
   }
 
   //sign up new user
-  signUp({required String name, required String email, required String password, required BuildContext context}) async {
+  signUp(
+      {required String name,
+      required String email,
+      required String password,
+      required BuildContext context}) async {
     try {
       TrelloUser user = await dataClient.signupWithEmail(name, email, password);
       await dataClient.user.createUser(user);
@@ -63,10 +67,9 @@ mixin Service {
             duration: const Duration(seconds: 5),
             title: 'Syncing Workspaces...',
             configuration:
-            const IconConfiguration(icon: Icons.sync, color: brandColor),
+                const IconConfiguration(icon: Icons.sync, color: brandColor),
             maxWidth: 260);
       }
-
     } on Exception catch (e) {
       log('Error with login: $e', error: e);
       StatusAlert.show(context,
@@ -74,7 +77,7 @@ mixin Service {
           title: 'Login Error',
           subtitle: e.toString(),
           subtitleOptions: StatusAlertTextConfiguration(
-            softWrap: true, maxLines: 3, overflow: TextOverflow.ellipsis),
+              softWrap: true, maxLines: 3, overflow: TextOverflow.ellipsis),
           configuration:
               const IconConfiguration(icon: Icons.check, color: brandColor),
           maxWidth: 260);
@@ -93,7 +96,7 @@ mixin Service {
           subtitleOptions: StatusAlertTextConfiguration(
               softWrap: true, maxLines: 3, overflow: TextOverflow.ellipsis),
           configuration:
-          const IconConfiguration(icon: Icons.check, color: brandColor),
+              const IconConfiguration(icon: Icons.check, color: brandColor),
           maxWidth: 260);
     }
   }
@@ -173,7 +176,9 @@ mixin Service {
 
   //get a stream of workspaces for user, so we can react on distributed changes to it
   Stream<List<Workspace>> getWorkspacesStream() {
-    return dataClient.workspace.watchWorkspacesByUser(userId: trello.user.id).map((workspaces) {
+    return dataClient.workspace
+        .watchWorkspacesByUser(userId: trello.user.id)
+        .map((workspaces) {
       trello.setWorkspaces(workspaces);
       return workspaces;
     });
@@ -182,7 +187,28 @@ mixin Service {
   //create board
   createBoard(BuildContext context, Board brd) async {
     try {
+      
+      var labelColors = [<String, String>{}];
+      labelColors = [
+        {"color": "fd6267", "name": "Bug"},
+        {"color": "67ddf3", "name": "Feature"},
+        {"color": "a282ff", "name": "Enhancement"},
+        {"color": "f7b94a", "name": "Documentation"},
+        {"color": "f8ff6e", "name": "Marketing"}
+      ];
+
       await dataClient.board.createBoard(brd);
+      // Add the default labels to the board
+      for (var label in labelColors) {        
+        await dataClient.boardLabel.createBoardLabel(BoardLabel(
+            id: randomUuid(),
+            boardId: brd.id,
+            workspaceId: brd.workspaceId,
+            title: label["name"] ?? "",
+            color: label["color"] ?? "",
+            dateCreated: DateTime.now()));
+      }
+
       if (context.mounted) {
         Navigator.pushNamed(context, "/home");
       }
@@ -199,15 +225,17 @@ mixin Service {
 
   //get boards of a specific workspace by Workspace ID
   Future<List<Board>> getBoards(String workspaceId) async {
-    List<Board> boards =
-        await dataClient.workspace.getBoardsByWorkspace(workspaceId: workspaceId);
+    List<Board> boards = await dataClient.workspace
+        .getBoardsByWorkspace(workspaceId: workspaceId);
     trello.setBoards(boards);
     return boards;
   }
 
   //watch boards of a specific workspace by Workspace ID via a stream
   Stream<List<Board>> getBoardsStream(String workspaceId) {
-    return dataClient.workspace.watchBoardsByWorkspace(workspaceId: workspaceId).map((boards) {
+    return dataClient.workspace
+        .watchBoardsByWorkspace(workspaceId: workspaceId)
+        .map((boards) {
       trello.setBoards(boards);
       return boards;
     });
@@ -226,7 +254,8 @@ mixin Service {
 
   //get information of members
   Future<List<TrelloUser>> getMembersInformation(List<Member> mmbrs) async {
-    List<TrelloUser> usrs = await dataClient.member.getInformationOfMembers(mmbrs);
+    List<TrelloUser> usrs =
+        await dataClient.member.getInformationOfMembers(mmbrs);
     return usrs;
   }
 
@@ -249,7 +278,8 @@ mixin Service {
   //remove Member from Workspace
   Future<Workspace> removeMemberFromWorkspace(
       Member mmbr, Workspace wkspc) async {
-    Workspace updatedWorkspace = await dataClient.member.deleteMember(mmbr, wkspc);
+    Workspace updatedWorkspace =
+        await dataClient.member.deleteMember(mmbr, wkspc);
     return updatedWorkspace;
   }
 
@@ -306,13 +336,51 @@ mixin Service {
         description: "${trello.user.name} updated the card ${crd.name}");
   }
 
+  //delete card
+  Future<void> deleteCard(Cardlist crd) async {
+    await dataClient.card.deleteCard(crd);
+
+    createActivity(
+        card: crd.id,
+        workspaceId: crd.workspaceId,
+        description: "${trello.user.name} deleted the card ${crd.name}");
+  }
+
   Future<int> archiveCardsInList(Listboard list) async {
     return dataClient.listboard.archiveCardsInList(list);
   }
 
+  //add card
+  Future<CardLabel> addCardLabel(CardLabel crdlbl, BoardLabel brdlbl) async {
+    final newCardLabel = await dataClient.cardLabel.createCardLabel(crdlbl);
+    createActivity(
+        card: crdlbl.cardId,
+        workspaceId: brdlbl.workspaceId,
+        description: "${trello.user.name} added a new label '${brdlbl.title}'");
+
+    return newCardLabel;
+  }
+
+  //add card
+  Future<void> deleteCardLabel(cardId, BoardLabel brdlbl) async {
+    await dataClient.cardLabel.deleteCardLabel(brdlbl);
+    createActivity(
+        card: cardId,
+        workspaceId: brdlbl.workspaceId,
+        description: "${trello.user.name} deleted the label '${brdlbl.title}'");
+  }
+
+  //updateBoardLabel
+  Future<void> updateBoardLabel(BoardLabel brdlbl) async {
+    await dataClient.boardLabel.updateBoardLabel(brdlbl);
+  }
+
   //create activity
   Future<void> createActivity(
-      {required String workspaceId, String? boardId, required String description, String? card}) async {
+      {required String workspaceId,
+      String? boardId,
+      required String description,
+      String? card}) async {
     await dataClient.activity.createActivity(Activity(
         id: randomUuid(),
         workspaceId: workspaceId,

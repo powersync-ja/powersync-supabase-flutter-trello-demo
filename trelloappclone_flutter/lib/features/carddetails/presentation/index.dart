@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:trelloappclone_flutter/features/activity/presentation/index.dart';
 import 'package:trelloappclone_flutter/utils/color.dart';
 import 'package:trelloappclone_powersync_client/trelloappclone_powersync_client.dart';
+import 'package:trelloappclone_flutter/main.dart';
 
 import '../../../utils/service.dart';
+import '../../../utils/widgets.dart';
 import '../../editlabels/presentation/index.dart';
 import '../../viewmembers/presentation/index.dart';
 import '../domain/card_detail_arguments.dart';
@@ -19,9 +21,11 @@ class CardDetails extends StatefulWidget {
 
 class _CardDetailsState extends State<CardDetails> with Service {
   final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController checklistController = TextEditingController();
   bool showChecklist = false;
   bool addCardDescription = false;
+  bool editCardName = false;
   Map<int, bool> checked = {};
 
   @override
@@ -29,21 +33,34 @@ class _CardDetailsState extends State<CardDetails> with Service {
     final args =
         ModalRoute.of(context)!.settings.arguments as CardDetailArguments;
 
+    trello.setSelectedCard(args.crd);
     descriptionController.text = args.crd.description ?? " ";
+    nameController.text = args.crd.name ?? " ";
 
     return Scaffold(
-      appBar: (showChecklist || addCardDescription)
+      appBar: (showChecklist || addCardDescription || editCardName)
           ? AppBar(
               leading: IconButton(
                 onPressed: () {
                   setState(() {
                     showChecklist = false;
                     addCardDescription = false;
+                    editCardName = false;
                   });
                 },
                 icon: const Icon(Icons.close, size: 30),
               ),
-              title: const Text("New Item"),
+              title: Text(() {
+                if (showChecklist) {
+                  return "Add Checklist";
+                } else if (addCardDescription) {
+                  return "Add card description";
+                } else if (editCardName) {
+                  return "Edit card name";
+                } else {
+                  return "";
+                }
+              }()),
               actions: [
                   IconButton(
                     icon: const Icon(Icons.check),
@@ -59,11 +76,23 @@ class _CardDetailsState extends State<CardDetails> with Service {
                         setState(() {
                           showChecklist = false;
                         });
-                      } else if (addCardDescription) {
-                        if (descriptionController.text.isNotEmpty) {
+                      } else if (addCardDescription || editCardName) {
+                        if (addCardDescription &&
+                            descriptionController.text.isNotEmpty) {
                           args.crd.description = descriptionController.text;
-                          updateCard(args.crd);
                         }
+
+                        if (editCardName && nameController.text.isNotEmpty) {
+                          args.crd.name = nameController.text;
+                        }
+
+                        updateCard(args.crd);
+                        descriptionController.clear();
+                        nameController.clear();
+                        setState(() {
+                          addCardDescription = false;
+                          editCardName = false;
+                        });
                       }
                     },
                   )
@@ -76,19 +105,71 @@ class _CardDetailsState extends State<CardDetails> with Service {
                 icon: const Icon(Icons.close, size: 30),
               ),
               actions: [
-                  IconButton(
-                    icon: const Icon(Icons.more_vert),
-                    onPressed: () {},
+                  PopupMenuButton<Text>(
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem(
+                          onTap: () => WidgetsBinding?.instance
+                              ?.addPostFrameCallback((_) {
+                            showDialog<String>(
+                                context: context,
+                                builder: (BuildContext context) => AlertDialog(
+                                      title: const Text('Delete Card'),
+                                      content: const Text(
+                                          'Are you sure you want to delete this card?'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, 'Cancel'),
+                                          child: const Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () => {
+                                            deleteCard(args.crd),
+                                            // Remove popup
+                                            Navigator.pop(context, 'Delete'),
+                                            // Go one view back
+                                            Navigator.pop(context, 'Delete'),
+                                          },
+                                          child: const Text('Delete'),
+                                        ),
+                                      ],
+                                    ));
+                          }),
+                          value: const Text("Delete Card"),
+                          child: const ListTile(
+                            leading: Icon(Icons.delete),
+                            title: Text(
+                              "Delete Card",
+                            ),
+                          ),
+                        ),
+                      ];
+                    },
                   )
+                  // IconButton(
+                  //   icon: const Icon(Icons.more_vert),
+                  //   onPressed: () {},
+                  // )
                 ]),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              args.crd.name,
-              style: const TextStyle(fontSize: 20),
+            ListTile(
+              title: TextField(
+                style: const TextStyle(
+                  fontSize: 20.0, // Set your desired font size here
+                ),
+                controller: nameController,
+                onTap: () {
+                  setState(() {
+                    editCardName = true;
+                  });
+                },
+                decoration: const InputDecoration(hintText: "Edit card name"),
+              ),
             ),
             RichText(
                 text: TextSpan(
@@ -149,6 +230,9 @@ class _CardDetailsState extends State<CardDetails> with Service {
               leading: const Icon(Icons.short_text),
               title: TextField(
                 controller: descriptionController,
+                keyboardType: TextInputType.multiline,
+                minLines: 1,
+                maxLines: 1024,
                 onTap: () {
                   setState(() {
                     addCardDescription = true;
@@ -160,13 +244,38 @@ class _CardDetailsState extends State<CardDetails> with Service {
             ),
             ListTile(
               leading: const Icon(Icons.label),
-              title: const Text("Labels"),
+              title: Row(
+                children: <Widget>[
+                  const Text("Labels"),
+                  // Add a horizontal space
+                  const SizedBox(width: 8),
+                  // Example labels with colored Chips
+                  ...trello.selectedCard!.cardLabels!.map(
+                    (cardLabel) => Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 4), // Horizontal margin
+                        child: LabelDiplay(
+                            color: trello.selectedBoard.boardLabels!
+                                .firstWhere((boardLabel) =>
+                                    boardLabel.id == cardLabel.boardLabelId)
+                                .color,
+                            label: trello.selectedBoard.boardLabels!
+                                .firstWhere((boardLabel) =>
+                                    boardLabel.id == cardLabel.boardLabelId)
+                                .title)),
+                  ),
+                ],
+              ),
               onTap: () {
-                showDialog(
+                final result = showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return const EditLabels();
+                      return EditLabels(cardId: args.crd.id);
                     });
+
+                result.then((value) {
+                  setState(() {});
+                });
               },
             ),
             ListTile(

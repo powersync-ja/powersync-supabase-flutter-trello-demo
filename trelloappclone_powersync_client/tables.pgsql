@@ -267,3 +267,66 @@ ALTER TABLE ONLY "activity"
       REFERENCES card(id)
         ON DELETE CASCADE;
 
+--
+-- Class Board Labels as table board_labels
+--
+
+CREATE TABLE "board_label" (
+  "id" uuid not null default gen_random_uuid (),
+  "boardId" uuid NOT NULL,
+  "workspaceId" uuid NOT NULL,
+  "title" text NOT NULL,
+  "color" text NOT NULL,
+  "dateCreated" timestamp without time zone NOT NULL
+);
+
+ALTER TABLE ONLY "board_label"
+  ADD CONSTRAINT board_label_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY "board_label"
+  ADD CONSTRAINT board_label_fk_0
+    FOREIGN KEY("boardId")
+      REFERENCES board(id)
+        ON DELETE CASCADE;
+ALTER TABLE ONLY "board_label"
+  ADD CONSTRAINT board_label_fk_1
+    FOREIGN KEY("workspaceId")
+      REFERENCES workspace(id)
+        ON DELETE CASCADE;
+
+--
+-- Class Card Labels as table card_labels
+--
+
+CREATE TABLE "card_label" (
+  "id" uuid not null default gen_random_uuid (),
+  "boardLabelId" uuid NOT NULL,
+  "workspaceId" uuid NOT NULL,
+  "boardId" uuid NOT NULL,
+  "cardId" uuid NOT NULL,
+  "dateCreated" timestamp without time zone NOT NULL
+);
+
+ALTER TABLE ONLY "card_label"
+  ADD CONSTRAINT card_label_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY "card_label"
+  ADD CONSTRAINT card_label_fk_0
+    FOREIGN KEY("boardLabelId")
+      REFERENCES board_label(id)
+        ON DELETE CASCADE;
+ALTER TABLE ONLY "card_label"
+  ADD CONSTRAINT card_label_fk_1
+    FOREIGN KEY("cardId")
+      REFERENCES card(id)
+        ON DELETE CASCADE;
+ALTER TABLE ONLY "card_label"
+  ADD CONSTRAINT card_label_fk_2
+    FOREIGN KEY("workspaceId")
+      REFERENCES workspace(id)
+        ON DELETE CASCADE;
+ALTER TABLE ONLY "card_label"
+  ADD CONSTRAINT card_label_fk_3
+    FOREIGN KEY("boardId")
+      REFERENCES board(id)
+        ON DELETE CASCADE;
