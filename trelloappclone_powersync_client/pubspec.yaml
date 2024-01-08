@@ -7,7 +7,7 @@ environment:
   sdk: '>=2.17.0 <4.0.0'
 
 dependencies:
-  powersync: ^1.0.0
+  powersync: ^1.1.0
   path_provider: ^2.0.12
   supabase_flutter: ^1.6.2
   path: ^1.8.2
