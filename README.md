@@ -1,4 +1,4 @@
-# PowerSync + Flutter
+# Trello Clone Using PowerSync + Flutter
 
 ## Introduction
 
